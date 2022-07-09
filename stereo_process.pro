@@ -29,14 +29,22 @@ function stereo_process, directory
     spawn, 'rm *s5c1B.fts'
     spawn, 'mkdir -p /Users/crura/Desktop/Research/2007_Images/B/2007' + monthstring + '0'+istring + '/processed'
     filelist = FILE_SEARCH('*.fts')
-    i=0
-    while (i LT n_elements(filelist)) do begin
-      print, filelist[i:i+2]
-      file = string(filelist[i:i+2])
+    k=0
+    while (k LT n_elements(filelist)) do begin
+      print, filelist[k:k+2]
+      file = string(filelist[k:k+2])
       secchi_prep, file, headd, imd, /CALIMG_OFF, /NOCALFAC,/rotate_on,  /write_fts, savepath = spath,/polariz_on, /pB
-      i= i+3
+      k= k+3
     endwhile
 
+    spath = '/Users/crura/Desktop/Research/2007_Images/B/2007' + monthstring + '0'+istring + '/processed'
+    year_month_day_print = '2007_' + monthstring + '_' + istring
+    save,spath,year_month_day_print,filename='/Users/crura/Desktop/Research/idlroutines/STEREO_Data_Processing/parameters.sav'
+    while (i eq 2) do begin
+      spawn, 'cp /Users/crura/Desktop/Research/idlroutines/STEREO_Data_Processing/parameters.sav /Users/crura/Desktop/Research/idlroutines/STEREO_Data_Processing/parameters_safe.sav'
+      i= i+1
+    endwhile
+    spawn, 'python /Users/crura/Desktop/Research/idlroutines/STEREO_Data_Processing/produce_representative_image.py'
   ENDFOR
 
   ENDFOR
