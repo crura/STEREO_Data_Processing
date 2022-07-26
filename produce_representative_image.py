@@ -61,6 +61,14 @@ for child in parent_list:
 
         file = str(path + child)
         image_data = fits.getdata(file, ext=0)
+
+        # rectify nan values in image arrays
+        if np.isnan(np.sum(image_data)) == True:    # if there are NaN values in array
+            where_nan = np.where(np.isnan(image_data) ==True)   # find where in array NaN values exist
+            nan_pairs = np.asarray(where_nan).T     # transform np.where array to index coordinate pairs of pixels
+            for i,j in nan_pairs:
+                image_data[i,j] = image_data[np.where(np.isnan(image_data) ==False)].min()    # set NaN values of data to minimum value of finite pixels in array
+
         imagelist.append(image_data)
         head_data = fits.getheader(file)
         headlist.append(head_data)
@@ -261,8 +269,8 @@ head = fits.getheader(fits_dir)
 fitsmap = sunpy.map.Map(data, head)
 
 # fits_dir_mlso = pathnew.parent.parent.joinpath(str(idl_save['fits_directory'],'utf-8'))
-
-fig = plt.figure(figsize=(12, 5))
-# ax1 = fig.add_subplot(1, 2, 1, projection=fitsmap)
-fitsmap.plot(norm=matplotlib.colors.LogNorm())
-plt.show()
+#
+# fig = plt.figure(figsize=(12, 5))
+# # ax1 = fig.add_subplot(1, 2, 1, projection=fitsmap)
+# fitsmap.plot(norm=matplotlib.colors.LogNorm())
+# plt.show()
