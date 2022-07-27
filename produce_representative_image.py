@@ -278,6 +278,19 @@ hdumax.writeto(pathnew+'/{}_rep_max.fts'.format(year_month_day_print),overwrite=
 
 
 
+hdumean = fits.PrimaryHDU(data=imcombmean,header=head)
+#hdumean.writeto('/Users/Chris/Desktop/Goddard Research/FITS Images New/downloaded fits/Background images/All images/rep_avg.fts',overwrite=True)
+hdumean.writeto('/Users/crura/Desktop/Research/2007_Images/Representative_Average_Images/{}_rep_avg.fts'.format(year_month_day_print),overwrite=True)
+
+hdumed = fits.PrimaryHDU(data=imcombmed,header=head)
+#hdumed.writeto('/Users/Chris/Desktop/Goddard Research/FITS Images New/downloaded fits/Background images/All images/rep_med.fts',overwrite=True)
+hdumed.writeto('/Users/crura/Desktop/Research/2007_Images/Representative_Maximum_Images/{}_rep_med.fts'.format(year_month_day_print),overwrite=True)
+
+hdumax = fits.PrimaryHDU(data=imcombmax,header=head)
+#hdumax.writeto('/Users/Chris/Desktop/Goddard Research/FITS Images New/downloaded fits/Background images/All images/rep_max.fts',overwrite=True)
+hdumax.writeto('/Users/crura/Desktop/Research/2007_Images/Representative_Median_Images/{}_rep_max.fts'.format(year_month_day_print),overwrite=True)
+
+
 print('finished')
 
 
