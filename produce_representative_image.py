@@ -19,7 +19,21 @@ year_month_day_print = idl_save['year_month_day_print'].decode()
 #importlib.reload(radialProfile)
 # azimuthalAverage = radialProfile.azimuthalAverage
 
+import logging
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 
+
+def setup_logger(name, log_file, level=logging.INFO):
+    """To setup as many loggers as you want"""
+
+    handler = logging.FileHandler(log_file)
+    handler.setFormatter(formatter)
+
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
+    logger.addHandler(handler)
+
+    return logger
 
 # for i in tqdm_notebook(range(21,22)):
 
@@ -36,6 +50,13 @@ for child in parent_list:
         pass            #pass
     elif child == 'Representative_Images':
         pass
+    elif child.endswith('0_0P4c1B.fts') ==False:
+        print('file: {} incorrectly processed, logging and aborting processing'.format(child))
+        # first file logger
+        logger = setup_logger('process_logger', '/Users/crura/Desktop/Research/2007_Images/process_events.log')
+        logger.info('file: {} incorrectly processed'.format(child))
+        logger.handlers.clear()
+        break
     # elif child == 'rep_avg.fts':
     #     print('no')
     #     pass            #pass
