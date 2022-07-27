@@ -51,13 +51,15 @@ function stereo_process, directory
 
 
   ;day string
-  FOR i = 10, 31 DO BEGIN
+  FOR i = 24, 31 DO BEGIN
     istring = STRTRIM(i,2)
     istring2 = '2007/' + monthstring + '/' + istring + 'T09:35:00-2007/' + monthstring + '/' + istring + 'T17:45:25'
     istring3 = '/Users/crura/Desktop/Research/2007_Images/B/2007' + monthstring +istring
     try1 = vso_search(date='2007/' + monthstring + '/' + istring + 'T09:35:00-2007/' + monthstring + '/' + istring + 'T17:45:25', inst='COR1',source='STEREO-B',info=0,out_dir='/Users/crura/Desktop/Research/2007_Images/B/2007' + monthstring +istring)
     try2 = vso_search(date='2007/' + monthstring + '/' + istring + 'T09:35:09-2007/' + monthstring + '/' + istring + 'T17:45:25', inst='COR1',source='STEREO-B',sample=600,info=120,out_dir='/Users/crura/Desktop/Research/2007_Images/B/2007' + monthstring +istring)
     try3 = vso_search(date='2007/' + monthstring + '/' + istring + 'T09:35:18-2007/' + monthstring + '/' + istring + 'T17:45:25', inst='COR1',source='STEREO-B',sample=600,info=240,out_dir='/Users/crura/Desktop/Research/2007_Images/B/2007' + monthstring +istring)
+
+    IF (ISA(try1,/array) EQ 1) THEN BEGIN ; check that vso_search returns array indicating images were found
     con1 = WHERE(try1.info eq 'COR1 ;  ; SERIES ; 0deg. ; 1056x1088')
     con2 = WHERE(try1.info eq 'COR1 ;  ; SERIES ; 120deg. ; 1056x1088')
     con3 = WHERE(try1.info eq 'COR1 ;  ; SERIES ; 240deg. ; 1056x1088')
@@ -92,6 +94,10 @@ function stereo_process, directory
       ;i= i+1
     ;endwhile
     spawn, 'python /Users/crura/Desktop/Research/idlroutines/STEREO_Data_Processing/produce_representative_image.py'
+
+    ENDIF ELSE BEGIN
+    IF (ISA(try1,/array) NE 1) THEN PRINT, 'vso_search returned no results, moving to next iteration' ELSE PRINT, 'vso_search returned no results, moving to next iteration'
+    ENDELSE
   ENDFOR
 
   ENDFOR
