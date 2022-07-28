@@ -1,7 +1,7 @@
 function stereo_process, directory
 
   ;month string
-  FOR j =2, 12 DO BEGIN
+  FOR j =1, 12 DO BEGIN
     IF (j LT 10) THEN BEGIN
     monthstring = '0'+ string(j)
     monthstring = monthstring.Compress()
@@ -77,7 +77,7 @@ function stereo_process, directory
 
 
   ;day string
-  FOR i = 30, 31 DO BEGIN
+  FOR i = 1, 31 DO BEGIN
     IF (i LT 10) THEN BEGIN
     istring = '0'+ string(i)
     istring = istring.Compress()
