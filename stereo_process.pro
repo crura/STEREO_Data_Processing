@@ -1,5 +1,7 @@
 function stereo_process, directory
 
+  fname = '/Users/crura/Desktop/Research/2007_Images/process_log.log'
+  OPENW,1,fname
   ;month string
   FOR j =1, 12 DO BEGIN
     IF (j LT 10) THEN BEGIN
@@ -136,6 +138,7 @@ function stereo_process, directory
         k= k+3
 
       ENDIF ELSE IF (filelist[k].EndsWith('0_s4c1B.fts') EQ 1) AND (filelist[k+1].EndsWith('0_s4c1B.fts') EQ 1) AND (filelist[k+2].EndsWith('0_s4c1B.fts') EQ 1) THEN BEGIN
+          printf,1,'file ' + '2007'+monthstring +istring+' produced no rep images'
           break
       ENDIF ELSE BEGIN
         k= k+1
@@ -153,17 +156,23 @@ function stereo_process, directory
     spawn, 'python /Users/crura/Desktop/Research/idlroutines/STEREO_Data_Processing/produce_representative_image.py'
 
     ENDIF ELSE BEGIN
-    IF (ISA(con1,/array) NE 1) THEN PRINT, 'vso_search returned no results, moving to next iteration'
+    IF (ISA(con1,/array) NE 1) THEN begin
+      printf,1,'file ' + '2007'+monthstring +istring+' produced no rep images'
+      PRINT, 'vso_search returned no results, moving to next iteration'
+    endif
     ENDELSE
 
     ENDIF ELSE BEGIN
-    IF (ISA(try1,/array) NE 1) THEN PRINT, 'vso_search returned no results, moving to next iteration'
+    IF (ISA(try1,/array) NE 1) THEN begin
+      printf,1,'file ' + '2007'+monthstring +istring+' produced no rep images'
+      PRINT, 'vso_search returned no results, moving to next iteration'
+    endif
     ENDELSE
   ENDFOR
 
   ENDFOR
 
-
+close,1
 
 
 END
