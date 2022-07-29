@@ -11,7 +11,7 @@ function stereo_process, directory
     monthstring = string(j)
     monthstring = monthstring.Compress()
     ENDELSE
-  
+
   ;day string
   FOR i = 1, 31 DO BEGIN
     IF (i LT 10) THEN BEGIN
@@ -21,9 +21,7 @@ function stereo_process, directory
     istring = string(i)
     istring = istring.Compress()
     ENDELSE
-    ; istring = STRTRIM(i,2)
-    ; istring2 = '2007/' + monthstring + '/' + istring + 'T09:35:00-2007/' + monthstring + '/' + istring + 'T17:45:25'
-    ; istring3 = '/Users/crura/Desktop/Research/2007_Images/B/2007' + monthstring +istring
+
     try1 = vso_search(date='2007/' + monthstring + '/' + istring + 'T09:35:00-2007/' + monthstring + '/' + istring + 'T17:45:25', inst='COR1',source='STEREO-B',info=0,out_dir='/Users/crura/Desktop/Research/2007_Images/B/2007' + monthstring +istring)
     try2 = vso_search(date='2007/' + monthstring + '/' + istring + 'T09:35:09-2007/' + monthstring + '/' + istring + 'T17:45:25', inst='COR1',source='STEREO-B',sample=600,info=120,out_dir='/Users/crura/Desktop/Research/2007_Images/B/2007' + monthstring +istring)
     try3 = vso_search(date='2007/' + monthstring + '/' + istring + 'T09:35:18-2007/' + monthstring + '/' + istring + 'T17:45:25', inst='COR1',source='STEREO-B',sample=600,info=240,out_dir='/Users/crura/Desktop/Research/2007_Images/B/2007' + monthstring +istring)
@@ -48,7 +46,7 @@ function stereo_process, directory
 
     cd, '/Users/crura/Desktop/Research/2007_Images/B/2007' + monthstring +istring
     setenv, "SECCHI_BKG=/Users/crura/stereo/secchi/backgrounds"
-    ; /Users/crura/stereo/secchi/backgrounds/a/monthly_min/200612/mc1A_p120_061231.fts
+
     spath = '/Users/crura/Desktop/Research/2007_Images/B/2007' + monthstring +istring + '/processed'
     spawn, 'rm *s5c1B.fts'
     spawn, 'mkdir -p /Users/crura/Desktop/Research/2007_Images/B/2007' + monthstring +istring + '/processed'
@@ -56,7 +54,7 @@ function stereo_process, directory
     k=0
     CATCH, Error_status
     while (k LT n_elements(filelist)) do begin
-      ;print, filelist[k:k+2]
+
       IF Error_status NE 0 THEN BEGIN
         PRINT, 'Error index: ', Error_status
         PRINT, 'Error message: ', !ERROR_STATE.MSG
@@ -83,10 +81,7 @@ function stereo_process, directory
     year_month_day_print = '2007_' + monthstring + '_' + istring
     save,spath,year_month_day_print,filename='/Users/crura/Desktop/Research/idlroutines/STEREO_Data_Processing/parameters.sav'
     spawn, 'cp /Users/crura/Desktop/Research/idlroutines/STEREO_Data_Processing/parameters.sav /Users/crura/Desktop/Research/idlroutines/STEREO_Data_Processing/parameters_safe.sav'
-    ;while (i eq 2) do begin
-      ;spawn, 'cp /Users/crura/Desktop/Research/idlroutines/STEREO_Data_Processing/parameters.sav /Users/crura/Desktop/Research/idlroutines/STEREO_Data_Processing/parameters_safe.sav'
-      ;i= i+1
-    ;endwhile
+    
     spawn, 'python /Users/crura/Desktop/Research/idlroutines/STEREO_Data_Processing/produce_representative_image.py'
 
     ENDIF ELSE BEGIN
