@@ -1,7 +1,9 @@
 function stereo_process, directory
 
-  fname = '/Users/crura/Desktop/Research/2007_Images/process_log.log'
+  fname = '/Users/crura/Desktop/Research/2007_Images/process_error_log.log'
+  fname2 = '/Users/crura/Desktop/Research/2007_Images/process_log.log'
   OPENW,1,fname
+  OPENW,2,fname2
   ;month string
   FOR j =1, 12 DO BEGIN
     IF (j LT 10) THEN BEGIN
@@ -52,6 +54,7 @@ function stereo_process, directory
     spawn, 'mkdir -p /Users/crura/Desktop/Research/2007_Images/B/2007' + monthstring +istring + '/processed'
     filelist = FILE_SEARCH('*.fts')
     k=0
+    success_condition = 0
     CATCH, Error_status
     while (k LT n_elements(filelist)) do begin
 
@@ -68,6 +71,7 @@ function stereo_process, directory
         file = string(filelist[k:k+2])
         secchi_prep, file, headd, imd, /CALIMG_OFF, /NOCALFAC,/rotate_on,  /write_fts, savepath = spath,/polariz_on, /pB
         k= k+3
+        success_condition = 1
 
       ENDIF ELSE IF (filelist[k].EndsWith('0_s4c1B.fts') EQ 1) AND (filelist[k+1].EndsWith('0_s4c1B.fts') EQ 1) AND (filelist[k+2].EndsWith('0_s4c1B.fts') EQ 1) THEN BEGIN
           printf,1,'file ' + '2007'+monthstring +istring+' produced no rep images'
@@ -77,11 +81,16 @@ function stereo_process, directory
       ENDELSE
     endwhile
 
+    if (success_condition EQ 1) then begin
+      process_count = string(n_elements(filelist)/3)
+      printf,2,'file 2007' + monthstring +istring + ' rep image represents ' + process_count.Compress() + ' images'
+    endif
+
     spath = '/Users/crura/Desktop/Research/2007_Images/B/2007' + monthstring +istring + '/processed'
     year_month_day_print = '2007_' + monthstring + '_' + istring
     save,spath,year_month_day_print,filename='/Users/crura/Desktop/Research/idlroutines/STEREO_Data_Processing/parameters.sav'
     spawn, 'cp /Users/crura/Desktop/Research/idlroutines/STEREO_Data_Processing/parameters.sav /Users/crura/Desktop/Research/idlroutines/STEREO_Data_Processing/parameters_safe.sav'
-    
+
     spawn, 'python /Users/crura/Desktop/Research/idlroutines/STEREO_Data_Processing/produce_representative_image.py'
 
     ENDIF ELSE BEGIN
@@ -102,6 +111,7 @@ function stereo_process, directory
   ENDFOR
 
 close,1
+close,2
 
 
 END
