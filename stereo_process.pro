@@ -83,7 +83,14 @@ function stereo_process, directory
 
     if (success_condition EQ 1) then begin
       process_count = string(n_elements(filelist)/3)
-      printf,2,'file 2007' + monthstring +istring + ' rep image represents ' + process_count.Compress() + ' images'
+      cd, spath
+      file_list_2 = FILE_SEARCH('*.fts')
+      fitsnew = readfits(file_list_2[-1])
+      image_size = size(fitsnew,/dimensions)
+      str = string(image_size[0])
+      str1 = string(image_size[1])
+      image_shape = str.Compress() + 'x' + str1.Compress()
+      printf,2,'file 2007' + monthstring +istring + ' rep image represents ' + process_count.Compress() + ' images and has size of ' + image_shape
     endif
 
     spath = '/Users/crura/Desktop/Research/2007_Images/B/2007' + monthstring +istring + '/processed'
