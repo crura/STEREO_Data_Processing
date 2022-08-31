@@ -13,7 +13,7 @@ from scipy.fft import fftshift # Shift the zero-frequency component to the cente
 #from radialProfile.py import azimuthalAverage
 # import radialProfile
 from scipy.io import readsav
-idl_save = readsav('/Users/crura/Desktop/Research/idlroutines/STEREO_Data_Processing/parameters_safe.sav')
+idl_save = readsav('/Volumes/Seagate/Chris/2017_Images/parameters_safe.sav')
 process_path = idl_save['spath'].decode()#str(idl_save['spath'],'utf-8')
 year_month_day_print = idl_save['year_month_day_print'].decode()
 #importlib.reload(radialProfile)
@@ -53,7 +53,7 @@ for child in parent_list:
     elif child.endswith('0_0P4c1B.fts') ==False:
         print('file: {} incorrectly processed, logging and aborting processing'.format(child))
         # first file logger
-        logger = setup_logger('process_logger', '/Users/crura/Desktop/Research/2007_Images/process_events.log')
+        logger = setup_logger('process_logger', '/Volumes/Seagate/Chris/2017_Images/process_events.log')
         logger.info('file: {} incorrectly processed'.format(child))
         logger.handlers.clear()
         break
@@ -280,15 +280,15 @@ hdumax.writeto(pathnew+'/{}_rep_max.fts'.format(year_month_day_print),overwrite=
 
 hdumean = fits.PrimaryHDU(data=imcombmean,header=head)
 #hdumean.writeto('/Users/Chris/Desktop/Goddard Research/FITS Images New/downloaded fits/Background images/All images/rep_avg.fts',overwrite=True)
-hdumean.writeto('/Users/crura/Desktop/Research/2007_Images/Representative_Average_Images/{}_rep_avg.fts'.format(year_month_day_print),overwrite=True)
+hdumean.writeto('/Volumes/Seagate/Chris/2017_Images/Representative_Average_Images/{}_rep_avg.fts'.format(year_month_day_print),overwrite=True)
 
 hdumed = fits.PrimaryHDU(data=imcombmed,header=head)
 #hdumed.writeto('/Users/Chris/Desktop/Goddard Research/FITS Images New/downloaded fits/Background images/All images/rep_med.fts',overwrite=True)
-hdumed.writeto('/Users/crura/Desktop/Research/2007_Images/Representative_Maximum_Images/{}_rep_med.fts'.format(year_month_day_print),overwrite=True)
+hdumed.writeto('/Volumes/Seagate/Chris/2017_Images/Representative_Maximum_Images/{}_rep_med.fts'.format(year_month_day_print),overwrite=True)
 
 hdumax = fits.PrimaryHDU(data=imcombmax,header=head)
 #hdumax.writeto('/Users/Chris/Desktop/Goddard Research/FITS Images New/downloaded fits/Background images/All images/rep_max.fts',overwrite=True)
-hdumax.writeto('/Users/crura/Desktop/Research/2007_Images/Representative_Median_Images/{}_rep_max.fts'.format(year_month_day_print),overwrite=True)
+hdumax.writeto('/Volumes/Seagate/Chris/2017_Images/Representative_Median_Images/{}_rep_max.fts'.format(year_month_day_print),overwrite=True)
 
 
 print('finished')
