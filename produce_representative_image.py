@@ -50,7 +50,7 @@ for child in parent_list:
         pass            #pass
     elif child == 'Representative_Images':
         pass
-    elif child.endswith('0_0P4c1B.fts') ==False:
+    elif child.endswith('0_0P4c1A.fts') ==False:
         print('file: {} incorrectly processed, logging and aborting processing'.format(child))
         # first file logger
         logger = setup_logger('process_logger', '/Volumes/Seagate/Chris/2017_Images/process_events.log')
@@ -102,8 +102,8 @@ for child in parent_list:
         current_cmap = matplotlib.cm.get_cmap()
         current_cmap.set_bad(color='red')
         plt.title('{}'.format(child))
-        # if child == '20140705_133500_0P4c1B.fts':
-        #     plt.savefig('2017081_133500_0P4c1B.png')
+        # if child == '20140705_133500_0P4c1A.fts':
+        #     plt.savefig('2017081_133500_0P4c1A.png')
         #plt.show()
         plt.close()
 #         imagelist.append(image_data)
@@ -157,7 +157,7 @@ imcombmed = np.median(imagelist, axis=0)
 #
 #
 # plt.figure()
-imcombmax = np.max(imagelist, axis=0)
+# imcombmax = np.max(imagelist, axis=0)
 # plt.imshow(imcombmax, cmap='viridis',vmin=0,interpolation='nearest')
 # plt.colorbar()
 # plt.clim(np.mean(imcombmax),np.mean(imcombmax)+2*np.std(imcombmax))
@@ -272,9 +272,9 @@ hdumed = fits.PrimaryHDU(data=imcombmed,header=head)
 #hdumed.writeto('/Users/Chris/Desktop/Goddard Research/FITS Images New/downloaded fits/Background images/All images/rep_med.fts',overwrite=True)
 hdumed.writeto(pathnew+'/{}_rep_med.fts'.format(year_month_day_print),overwrite=True)
 
-hdumax = fits.PrimaryHDU(data=imcombmax,header=head)
-#hdumax.writeto('/Users/Chris/Desktop/Goddard Research/FITS Images New/downloaded fits/Background images/All images/rep_max.fts',overwrite=True)
-hdumax.writeto(pathnew+'/{}_rep_max.fts'.format(year_month_day_print),overwrite=True)
+# hdumax = fits.PrimaryHDU(data=imcombmax,header=head)
+# #hdumax.writeto('/Users/Chris/Desktop/Goddard Research/FITS Images New/downloaded fits/Background images/All images/rep_max.fts',overwrite=True)
+# hdumax.writeto(pathnew+'/{}_rep_max.fts'.format(year_month_day_print),overwrite=True)
 
 
 
@@ -284,11 +284,11 @@ hdumean.writeto('/Volumes/Seagate/Chris/2017_Images/Representative_Average_Image
 
 hdumed = fits.PrimaryHDU(data=imcombmed,header=head)
 #hdumed.writeto('/Users/Chris/Desktop/Goddard Research/FITS Images New/downloaded fits/Background images/All images/rep_med.fts',overwrite=True)
-hdumed.writeto('/Volumes/Seagate/Chris/2017_Images/Representative_Maximum_Images/{}_rep_med.fts'.format(year_month_day_print),overwrite=True)
-
-hdumax = fits.PrimaryHDU(data=imcombmax,header=head)
-#hdumax.writeto('/Users/Chris/Desktop/Goddard Research/FITS Images New/downloaded fits/Background images/All images/rep_max.fts',overwrite=True)
-hdumax.writeto('/Volumes/Seagate/Chris/2017_Images/Representative_Median_Images/{}_rep_max.fts'.format(year_month_day_print),overwrite=True)
+hdumed.writeto('/Volumes/Seagate/Chris/2017_Images/Representative_Median_Images/{}_rep_med.fts'.format(year_month_day_print),overwrite=True)
+#
+# hdumax = fits.PrimaryHDU(data=imcombmax,header=head)
+# #hdumax.writeto('/Users/Chris/Desktop/Goddard Research/FITS Images New/downloaded fits/Background images/All images/rep_max.fts',overwrite=True)
+# hdumax.writeto('/Volumes/Seagate/Chris/2017_Images/Representative_Maximum_Images/{}_rep_max.fts'.format(year_month_day_print),overwrite=True)
 
 
 print('finished')

@@ -6,7 +6,7 @@ function stereo_process, directory
   OPENW,1,fname
   OPENW,2,fname2
   ; ;month string
-  FOR j =1, 12 DO BEGIN
+  FOR j =8, 8 DO BEGIN
     IF (j LT 10) THEN BEGIN
     monthstring = '0'+ string(j)
     monthstring = monthstring.Compress()
@@ -25,14 +25,14 @@ function stereo_process, directory
     istring = istring.Compress()
     ENDELSE
 
-    try1 = vso_search(date='2017/' + monthstring + '/' + istring + 'T09:35:00-2017/' + monthstring + '/' + istring + 'T17:45:25', inst='COR1',source='STEREO-B',info=0,out_dir='/Volumes/Seagate/Chris/2017_Images/B/2017' + monthstring +istring)
-    try2 = vso_search(date='2017/' + monthstring + '/' + istring + 'T09:35:09-2017/' + monthstring + '/' + istring + 'T17:45:25', inst='COR1',source='STEREO-B',sample=600,info=120,out_dir='/Volumes/Seagate/Chris/2017_Images/B/2017' + monthstring +istring)
-    try3 = vso_search(date='2017/' + monthstring + '/' + istring + 'T09:35:18-2017/' + monthstring + '/' + istring + 'T17:45:25', inst='COR1',source='STEREO-B',sample=600,info=240,out_dir='/Volumes/Seagate/Chris/2017_Images/B/2017' + monthstring +istring)
+    try1 = vso_search(date='2017/' + monthstring + '/' + istring + 'T09:35:00-2017/' + monthstring + '/' + istring + 'T17:45:25', inst='COR1',source='STEREO-A',info=0,out_dir='/Volumes/Seagate/Chris/2017_Images/A/2017' + monthstring +istring)
+    try2 = vso_search(date='2017/' + monthstring + '/' + istring + 'T09:35:09-2017/' + monthstring + '/' + istring + 'T17:45:25', inst='COR1',source='STEREO-A',sample=600,info=120,out_dir='/Volumes/Seagate/Chris/2017_Images/A/2017' + monthstring +istring)
+    try3 = vso_search(date='2017/' + monthstring + '/' + istring + 'T09:35:18-2017/' + monthstring + '/' + istring + 'T17:45:25', inst='COR1',source='STEREO-A',sample=600,info=240,out_dir='/Volumes/Seagate/Chris/2017_Images/A/2017' + monthstring +istring)
 
     IF (ISA(try1,/array) EQ 1) THEN BEGIN ; check that vso_search returns array indicating images were found
-    con1 = WHERE(try1.info eq 'COR1 ;  ; SERIES ; 0deg. ; 1056x1088')
-    con2 = WHERE(try1.info eq 'COR1 ;  ; SERIES ; 120deg. ; 1056x1088')
-    con3 = WHERE(try1.info eq 'COR1 ;  ; SERIES ; 240deg. ; 1056x1088')
+    con1 = WHERE(try1.info eq 'COR1 ;  ; SERIES ; 0deg. ; 512x512')
+    con2 = WHERE(try1.info eq 'COR1 ;  ; SERIES ; 120deg. ; 512x512')
+    con3 = WHERE(try1.info eq 'COR1 ;  ; SERIES ; 240deg. ; 512x512')
 
     IF (ISA(con1,/array) NE 1) THEN BEGIN ; check that vso_search returns array indicating images were found
     con1 = WHERE(try1.info eq 'COR1 ;  ; SERIES ; 0deg. ; 1024x1024')
@@ -41,18 +41,18 @@ function stereo_process, directory
     ENDIF
 
     IF (ISA(con1,/array) EQ 1) THEN BEGIN ; check that the condition returns array indicating images were found
-    spawn, 'mkdir -p /Volumes/Seagate/Chris/2017_Images/B/2017' + monthstring +istring
+    spawn, 'mkdir -p /Volumes/Seagate/Chris/2017_Images/A/2017' + monthstring +istring
 
-    a = vso_get(try1[con1],out_dir='/Volumes/Seagate/Chris/2017_Images/B/2017' + monthstring +istring,/force)
-    b = vso_get(try1[con2],out_dir='/Volumes/Seagate/Chris/2017_Images/B/2017' + monthstring +istring,/force)
-    c = vso_get(try1[con3],out_dir='/Volumes/Seagate/Chris/2017_Images/B/2017' + monthstring +istring,/force)
+    a = vso_get(try1[con1],out_dir='/Volumes/Seagate/Chris/2017_Images/A/2017' + monthstring +istring,/force)
+    b = vso_get(try1[con2],out_dir='/Volumes/Seagate/Chris/2017_Images/A/2017' + monthstring +istring,/force)
+    c = vso_get(try1[con3],out_dir='/Volumes/Seagate/Chris/2017_Images/A/2017' + monthstring +istring,/force)
 
-    cd, '/Volumes/Seagate/Chris/2017_Images/B/2017' + monthstring +istring
+    cd, '/Volumes/Seagate/Chris/2017_Images/A/2017' + monthstring +istring
     setenv, "SECCHI_BKG=/Users/crura/stereo/secchi/backgrounds"
 
-    spath = '/Volumes/Seagate/Chris/2017_Images/B/2017' + monthstring +istring + '/processed'
-    spawn, 'rm *s5c1B.fts'
-    spawn, 'mkdir -p /Volumes/Seagate/Chris/2017_Images/B/2017' + monthstring +istring + '/processed'
+    spath = '/Volumes/Seagate/Chris/2017_Images/A/2017' + monthstring +istring + '/processed'
+    spawn, 'rm *s5c1A.fts'
+    spawn, 'mkdir -p /Volumes/Seagate/Chris/2017_Images/A/2017' + monthstring +istring + '/processed'
     filelist = FILE_SEARCH('*.fts')
     k=0
     success_condition = 0
@@ -67,14 +67,14 @@ function stereo_process, directory
         CATCH, /CANCEL
       ENDIF
 
-      IF (filelist[k].EndsWith('0_s4c1B.fts') EQ 1) AND (filelist[k+1].EndsWith('9_s4c1B.fts') EQ 1) AND (filelist[k+2].EndsWith('8_s4c1B.fts') EQ 1) THEN BEGIN
+      IF (filelist[k].EndsWith('0_s4c1A.fts') EQ 1) AND (filelist[k+1].EndsWith('9_s4c1A.fts') EQ 1) AND (filelist[k+2].EndsWith('8_s4c1A.fts') EQ 1) THEN BEGIN
 
         file = string(filelist[k:k+2])
         secchi_prep, file, headd, imd, /CALIMG_OFF, /NOCALFAC,/rotate_on,  /write_fts, savepath = spath,/polariz_on, /pB
         k= k+3
         success_condition = 1
 
-      ENDIF ELSE IF (filelist[k].EndsWith('0_s4c1B.fts') EQ 1) AND (filelist[k+1].EndsWith('0_s4c1B.fts') EQ 1) AND (filelist[k+2].EndsWith('0_s4c1B.fts') EQ 1) THEN BEGIN
+      ENDIF ELSE IF (filelist[k].EndsWith('0_s4c1A.fts') EQ 1) AND (filelist[k+1].EndsWith('0_s4c1A.fts') EQ 1) AND (filelist[k+2].EndsWith('0_s4c1A.fts') EQ 1) THEN BEGIN
           printf,1,'file ' + '2017'+monthstring +istring+' produced no rep images'
           break
       ENDIF ELSE BEGIN
@@ -94,12 +94,12 @@ function stereo_process, directory
       printf,2,'file 2017' + monthstring +istring + ' rep image represents ' + process_count.Compress() + ' images and has size of ' + image_shape
     endif
 
-    spath = '/Volumes/Seagate/Chris/2017_Images/B/2017' + monthstring +istring + '/processed'
+    spath = '/Volumes/Seagate/Chris/2017_Images/A/2017' + monthstring +istring + '/processed'
     year_month_day_print = '2017_' + monthstring + '_' + istring
     save,spath,year_month_day_print,filename='/Volumes/Seagate/Chris/2017_Images/parameters.sav'
     spawn, 'cp /Volumes/Seagate/Chris/2017_Images/parameters.sav /Volumes/Seagate/Chris/2017_Images/parameters_safe.sav'
 
-    spawn, 'python /Volumes/Seagate/Chris/2017_Images/produce_representative_image.py'
+    spawn, 'python /Users/crura/Desktop/Research/idlroutines/STEREO_Data_Processing/produce_representative_image.py'
 
     ENDIF ELSE BEGIN
     IF (ISA(con1,/array) NE 1) THEN begin
@@ -138,14 +138,14 @@ function stereo_process, directory
   ;   istring = istring.Compress()
   ;   ENDELSE
   ;
-  ;   try1 = vso_search(date='2008/' + monthstring + '/' + istring + 'T09:35:00-2008/' + monthstring + '/' + istring + 'T17:45:25', inst='COR1',source='STEREO-B',info=0,out_dir='/Volumes/Seagate/Chris/2008_Images/B/2008' + monthstring +istring)
-  ;   try2 = vso_search(date='2008/' + monthstring + '/' + istring + 'T09:35:09-2008/' + monthstring + '/' + istring + 'T17:45:25', inst='COR1',source='STEREO-B',sample=600,info=120,out_dir='/Volumes/Seagate/Chris/2008_Images/B/2008' + monthstring +istring)
-  ;   try3 = vso_search(date='2008/' + monthstring + '/' + istring + 'T09:35:18-2008/' + monthstring + '/' + istring + 'T17:45:25', inst='COR1',source='STEREO-B',sample=600,info=240,out_dir='/Volumes/Seagate/Chris/2008_Images/B/2008' + monthstring +istring)
+  ;   try1 = vso_search(date='2008/' + monthstring + '/' + istring + 'T09:35:00-2008/' + monthstring + '/' + istring + 'T17:45:25', inst='COR1',source='STEREO-A',info=0,out_dir='/Volumes/Seagate/Chris/2008_Images/A/2008' + monthstring +istring)
+  ;   try2 = vso_search(date='2008/' + monthstring + '/' + istring + 'T09:35:09-2008/' + monthstring + '/' + istring + 'T17:45:25', inst='COR1',source='STEREO-A',sample=600,info=120,out_dir='/Volumes/Seagate/Chris/2008_Images/A/2008' + monthstring +istring)
+  ;   try3 = vso_search(date='2008/' + monthstring + '/' + istring + 'T09:35:18-2008/' + monthstring + '/' + istring + 'T17:45:25', inst='COR1',source='STEREO-A',sample=600,info=240,out_dir='/Volumes/Seagate/Chris/2008_Images/A/2008' + monthstring +istring)
   ;
   ;   IF (ISA(try1,/array) EQ 1) THEN BEGIN ; check that vso_search returns array indicating images were found
-  ;   con1 = WHERE(try1.info eq 'COR1 ;  ; SERIES ; 0deg. ; 1056x1088')
-  ;   con2 = WHERE(try1.info eq 'COR1 ;  ; SERIES ; 120deg. ; 1056x1088')
-  ;   con3 = WHERE(try1.info eq 'COR1 ;  ; SERIES ; 240deg. ; 1056x1088')
+  ;   con1 = WHERE(try1.info eq 'COR1 ;  ; SERIES ; 0deg. ; 512x512')
+  ;   con2 = WHERE(try1.info eq 'COR1 ;  ; SERIES ; 120deg. ; 512x512')
+  ;   con3 = WHERE(try1.info eq 'COR1 ;  ; SERIES ; 240deg. ; 512x512')
   ;
   ;   IF (ISA(con1,/array) NE 1) THEN BEGIN ; check that vso_search returns array indicating images were found
   ;   con1 = WHERE(try1.info eq 'COR1 ;  ; SERIES ; 0deg. ; 1024x1024')
@@ -154,18 +154,18 @@ function stereo_process, directory
   ;   ENDIF
   ;
   ;   IF (ISA(con1,/array) EQ 1) THEN BEGIN ; check that the condition returns array indicating images were found
-  ;   spawn, 'mkdir -p /Volumes/Seagate/Chris/2008_Images/B/2008' + monthstring +istring
+  ;   spawn, 'mkdir -p /Volumes/Seagate/Chris/2008_Images/A/2008' + monthstring +istring
   ;
-  ;   a = vso_get(try1[con1],out_dir='/Volumes/Seagate/Chris/2008_Images/B/2008' + monthstring +istring,/force)
-  ;   b = vso_get(try1[con2],out_dir='/Volumes/Seagate/Chris/2008_Images/B/2008' + monthstring +istring,/force)
-  ;   c = vso_get(try1[con3],out_dir='/Volumes/Seagate/Chris/2008_Images/B/2008' + monthstring +istring,/force)
+  ;   a = vso_get(try1[con1],out_dir='/Volumes/Seagate/Chris/2008_Images/A/2008' + monthstring +istring,/force)
+  ;   b = vso_get(try1[con2],out_dir='/Volumes/Seagate/Chris/2008_Images/A/2008' + monthstring +istring,/force)
+  ;   c = vso_get(try1[con3],out_dir='/Volumes/Seagate/Chris/2008_Images/A/2008' + monthstring +istring,/force)
   ;
-  ;   cd, '/Volumes/Seagate/Chris/2008_Images/B/2008' + monthstring +istring
+  ;   cd, '/Volumes/Seagate/Chris/2008_Images/A/2008' + monthstring +istring
   ;   setenv, "SECCHI_BKG=/Users/crura/stereo/secchi/backgrounds"
   ;
-  ;   spath = '/Volumes/Seagate/Chris/2008_Images/B/2008' + monthstring +istring + '/processed'
-  ;   spawn, 'rm *s5c1B.fts'
-  ;   spawn, 'mkdir -p /Volumes/Seagate/Chris/2008_Images/B/2008' + monthstring +istring + '/processed'
+  ;   spath = '/Volumes/Seagate/Chris/2008_Images/A/2008' + monthstring +istring + '/processed'
+  ;   spawn, 'rm *s5c1A.fts'
+  ;   spawn, 'mkdir -p /Volumes/Seagate/Chris/2008_Images/A/2008' + monthstring +istring + '/processed'
   ;   filelist = FILE_SEARCH('*.fts')
   ;   k=0
   ;   success_condition = 0
@@ -180,14 +180,14 @@ function stereo_process, directory
   ;       CATCH, /CANCEL
   ;     ENDIF
   ;
-  ;     IF (filelist[k].EndsWith('0_s4c1B.fts') EQ 1) AND (filelist[k+1].EndsWith('9_s4c1B.fts') EQ 1) AND (filelist[k+2].EndsWith('8_s4c1B.fts') EQ 1) THEN BEGIN
+  ;     IF (filelist[k].EndsWith('0_s4c1A.fts') EQ 1) AND (filelist[k+1].EndsWith('9_s4c1A.fts') EQ 1) AND (filelist[k+2].EndsWith('8_s4c1A.fts') EQ 1) THEN BEGIN
   ;
   ;       file = string(filelist[k:k+2])
   ;       secchi_prep, file, headd, imd, /CALIMG_OFF, /NOCALFAC,/rotate_on,  /write_fts, savepath = spath,/polariz_on, /pB
   ;       k= k+3
   ;       success_condition = 1
   ;
-  ;     ENDIF ELSE IF (filelist[k].EndsWith('0_s4c1B.fts') EQ 1) AND (filelist[k+1].EndsWith('0_s4c1B.fts') EQ 1) AND (filelist[k+2].EndsWith('0_s4c1B.fts') EQ 1) THEN BEGIN
+  ;     ENDIF ELSE IF (filelist[k].EndsWith('0_s4c1A.fts') EQ 1) AND (filelist[k+1].EndsWith('0_s4c1A.fts') EQ 1) AND (filelist[k+2].EndsWith('0_s4c1A.fts') EQ 1) THEN BEGIN
   ;         printf,1,'file ' + '2008'+monthstring +istring+' produced no rep images'
   ;         break
   ;     ENDIF ELSE BEGIN
@@ -207,12 +207,12 @@ function stereo_process, directory
   ;     printf,2,'file 2008' + monthstring +istring + ' rep image represents ' + process_count.Compress() + ' images and has size of ' + image_shape
   ;   endif
   ;
-  ;   spath = '/Volumes/Seagate/Chris/2008_Images/B/2008' + monthstring +istring + '/processed'
+  ;   spath = '/Volumes/Seagate/Chris/2008_Images/A/2008' + monthstring +istring + '/processed'
   ;   year_month_day_print = '2008_' + monthstring + '_' + istring
   ;   save,spath,year_month_day_print,filename='/Volumes/Seagate/Chris/2017_Images/parameters.sav'
   ;   spawn, 'cp /Volumes/Seagate/Chris/2017_Images/parameters.sav /Volumes/Seagate/Chris/2017_Images/parameters_safe.sav'
   ;
-  ;   spawn, 'python /Volumes/Seagate/Chris/2017_Images/produce_representative_image.py'
+  ;   spawn, 'python /Users/crura/Desktop/Research/idlroutines/STEREO_Data_Processing/produce_representative_image.py'
   ;
   ;   ENDIF ELSE BEGIN
   ;   IF (ISA(con1,/array) NE 1) THEN begin
