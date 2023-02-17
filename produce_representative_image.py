@@ -14,7 +14,7 @@ from scipy.fft import fftshift # Shift the zero-frequency component to the cente
 # import radialProfile
 from scipy.io import readsav
 idl_save = readsav('/Volumes/Seagate/Chris/2012_Images_match/parameters_safe.sav')
-process_path = idl_save['spath'].decode()#str(idl_save['spath'],'utf-8')
+process_path = idl_save['spath'][0].decode()#str(idl_save['spath'],'utf-8')
 year_month_day_print = idl_save['year_month_day_print'].decode()
 #importlib.reload(radialProfile)
 # azimuthalAverage = radialProfile.azimuthalAverage

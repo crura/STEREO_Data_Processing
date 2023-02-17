@@ -50,9 +50,10 @@ function stereo_process, directory
     istring_ytd = istring_ytd.Compress()
     ENDELSE
 
-    try1 = vso_search(date='2012/' + monthstring + '/' + istring + 'T16:35:00-2012/' + monthstring + '/' + istring_tmw + 'T00:45:25', inst='COR1',source='STEREO-A',info=0,out_dir='/Volumes/Seagate/Chris/2012_Images_match/A/2012' + monthstring +istring)
-    try2 = vso_search(date='2012/' + monthstring + '/' + istring + 'T16:35:09-2012/' + monthstring + '/' + istring_tmw + 'T00:45:25', inst='COR1',source='STEREO-A',sample=600,info=120,out_dir='/Volumes/Seagate/Chris/2012_Images_match/A/2012' + monthstring +istring)
-    try3 = vso_search(date='2012/' + monthstring + '/' + istring + 'T16:35:18-2012/' + monthstring + '/' + istring_tmw + 'T00:45:25', inst='COR1',source='STEREO-A',sample=600,info=240,out_dir='/Volumes/Seagate/Chris/2012_Images_match/A/2012' + monthstring +istring)
+    outstring = SCC_DATA_PATH('a',TYPE='seq',TEL='cor1',date='2012'+ monthstring +istring)
+    try1 = vso_search(date='2012/' + monthstring + '/' + istring + 'T16:35:00-2012/' + monthstring + '/' + istring_tmw + 'T00:45:25', inst='COR1',source='STEREO-A',info=0,out_dir=outstring)
+    try2 = vso_search(date='2012/' + monthstring + '/' + istring + 'T16:35:09-2012/' + monthstring + '/' + istring_tmw + 'T00:45:25', inst='COR1',source='STEREO-A',sample=600,info=120,out_dir=outstring)
+    try3 = vso_search(date='2012/' + monthstring + '/' + istring + 'T16:35:18-2012/' + monthstring + '/' + istring_tmw + 'T00:45:25', inst='COR1',source='STEREO-A',sample=600,info=240,out_dir=outstring)
 
     IF (ISA(try1,/array) EQ 1) THEN BEGIN ; check that vso_search returns array indicating images were found
     con1 = WHERE(try1.info eq 'COR1 ;  ; SERIES ; 0deg. ; 512x512')
@@ -67,12 +68,13 @@ function stereo_process, directory
 
     IF (ISA(con1,/array) EQ 1) THEN BEGIN ; check that the condition returns array indicating images were found
     spawn, 'mkdir -p /Volumes/Seagate/Chris/2012_Images_match/A/2012' + monthstring +istring
+    spawn, 'mkdir -p ' + outstring
 
-    a = vso_get(try1[con1],out_dir='/Volumes/Seagate/Chris/2012_Images_match/A/2012' + monthstring +istring,/force)
-    b = vso_get(try1[con2],out_dir='/Volumes/Seagate/Chris/2012_Images_match/A/2012' + monthstring +istring,/force)
-    c = vso_get(try1[con3],out_dir='/Volumes/Seagate/Chris/2012_Images_match/A/2012' + monthstring +istring,/force)
+    a = vso_get(try1[con1],out_dir=outstring,/force)
+    b = vso_get(try1[con2],out_dir=outstring,/force)
+    c = vso_get(try1[con3],out_dir=outstring,/force)
 
-    cd, '/Volumes/Seagate/Chris/2012_Images_match/A/2012' + monthstring +istring
+    cd, outstring
 
     spath = '/Volumes/Seagate/Chris/2012_Images_match/A/2012' + monthstring +istring + '/processed'
     spawn, 'rm *s5c1A.fts'
@@ -86,6 +88,7 @@ function stereo_process, directory
       IF Error_status NE 0 THEN BEGIN
         PRINT, 'Error index: ', Error_status
         PRINT, 'Error message: ', !ERROR_STATE.MSG
+        printf,1,'file ' + '2012'+monthstring +istring+' incorrectly produced rep image'
         ; Handle the error by breaking
         break
         CATCH, /CANCEL
