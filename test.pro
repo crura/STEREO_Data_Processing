@@ -3,8 +3,8 @@ function test, directory
   spawn, 'git rev-parse --show-toplevel', git_repo
   data = read_csv(git_repo + '/month_day_pair.csv')
 
-  fname = '/Volumes/Seagate/Chris/2012_Images_match/process_error_log_2012.log'
-  fname2 = '/Volumes/Seagate/Chris/2012_Images_match/process_log_2012.log'
+  fname = '/Volumes/Seagate/Chris/2012_Images_match/process_error_log_2012_B.log'
+  fname2 = '/Volumes/Seagate/Chris/2012_Images_match/process_log_2012_B.log'
   OPENW,1,fname
   OPENW,2,fname2
 
@@ -35,7 +35,14 @@ function test, directory
       print,j
       print,i
       savestring = timestamp(year = 2012, month = j, day = i)
-      CAT = COR1_PBSERIES( [time_1_string, time_2_string], 'Ahead')
+      CAT = COR1_PBSERIES( [time_1_string, time_2_string], 'Behind')
+      sz = size(cat)
+      n = n_elements(sz)
+      type = sz[n-2]
+      if (type eq 2) then begin
+        printf,1,'file ' + savestring +' produced no rep images'
+        break ;if no files found for time period, returns -1, break out of loop if this happens
+      endif
       file = cat.filename
       foreach hi, file do begin
         local_path = hi
@@ -46,7 +53,7 @@ function test, directory
         command_string = 'wget -O ' + local_path + ' ' + online_file_path
         spawn, command_string
       endforeach
-      spath = '/Volumes/Seagate/Chris/2012_Images_match/A/' + savestring
+      spath = '/Volumes/Seagate/Chris/2012_Images_match/B/' + savestring
       comand_string_2 = 'mkdir -p ' + spath
       spawn, comand_string_2
       year_month_day_print = savestring
