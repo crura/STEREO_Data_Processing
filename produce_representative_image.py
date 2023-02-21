@@ -50,7 +50,7 @@ for child in parent_list:
         pass            #pass
     elif child == 'Representative_Images':
         pass
-    elif child.endswith('0_0P4c1A.fts') ==False:
+    elif child.endswith('0_0P4c1B.fts') ==False:
         print('file: {} incorrectly processed, logging and aborting processing'.format(child))
         # first file logger
         logger = setup_logger('process_logger', '/Volumes/Seagate/Chris/2012_Images_match/process_events.log')
@@ -80,7 +80,7 @@ for child in parent_list:
     #print out to ensure each file has same polarization angle
 
 
-        file = str(path + child)
+        file = os.path.join(process_path,child)
         image_data = fits.getdata(file, ext=0)
 
         # rectify nan values in image arrays
@@ -102,150 +102,11 @@ for child in parent_list:
         current_cmap = matplotlib.cm.get_cmap()
         current_cmap.set_bad(color='red')
         plt.title('{}'.format(child))
-        # if child == '20140705_133500_0P4c1A.fts':
-        #     plt.savefig('2012081_133500_0P4c1A.png')
-        #plt.show()
         plt.close()
-#         imagelist.append(image_data)
-#         plt.figure()
-#         plt.imshow(image_data, cmap='viridis',vmin=0,interpolation='nearest')
-#         plt.colorbar()
-#         plt.clim(np.mean(image_data),np.mean(image_data)+2*np.std(image_data))
-#         current_cmap = matplotlib.cm.get_cmap()
-#         current_cmap.set_bad(color='red')
-#         plt.title('image_data')
-#         plt.show()
 
-
-# plt.figure()
 imcombmean = np.mean(imagelist, axis=0)
-# plt.imshow(imcombmean, cmap='viridis',vmin=0,interpolation='nearest')
-# plt.colorbar()
-# plt.clim(np.mean(imcombmean),np.mean(imcombmean)+2*np.std(imcombmean))
-# current_cmap = matplotlib.cm.get_cmap()
-# current_cmap.set_bad(color='red')
-# plt.title('representative mean {} 09:35:00 - 17:35:00'.format(year_month_day_print))
-# #plt.savefig('representative_mean201208{}.png'.format(day))
-# # plt.show()
-# plt.close()
-
-
-# plt.figure(1)
-# plt.clf()
-# plt.imshow( np.log10( imcombmean ), cmap=plt.cm.Greys)
-# plt.title('representative mean {} 09:35:00 - 17:35:00 log scale'.format(year_month_day_print))
-# plt.colorbar()
-
-# plt.figure()
 imcombmed = np.median(imagelist, axis=0)
-# plt.imshow(imcombmed, cmap='viridis',vmin=0,interpolation='nearest')
-# plt.colorbar()
-# plt.clim(np.mean(imcombmed),np.mean(imcombmed)+2*np.std(imcombmed))
-# current_cmap = matplotlib.cm.get_cmap()
-# current_cmap.set_bad(color='red')
-# plt.title('representative median {} 13:35:00 - 17:35:00'.format(year_month_day_print))
-# #plt.savefig('representative_median201208{}.png'.format(day))
-# # plt.show()
-# plt.close()
 
-
-# plt.figure(1)
-# plt.clf()
-# plt.imshow( np.log10( imcombmed ), cmap=plt.cm.Greys)
-# plt.title('representative median {} 13:35:00 - 17:35:00 log scale'.format(year_month_day_print))
-# plt.colorbar()
-#
-#
-# plt.figure()
-# imcombmax = np.max(imagelist, axis=0)
-# plt.imshow(imcombmax, cmap='viridis',vmin=0,interpolation='nearest')
-# plt.colorbar()
-# plt.clim(np.mean(imcombmax),np.mean(imcombmax)+2*np.std(imcombmax))
-# current_cmap = matplotlib.cm.get_cmap()
-# current_cmap.set_bad(color='red')
-# plt.title('representative maximum {} 13:35:00 - 17:35:00'.format(year_month_day_print))
-# #plt.savefig('representative_maximum201208{}.png'.format(day))
-# # plt.show()
-# plt.close()
-
-
-# plt.figure(1)
-# plt.clf()
-# plt.imshow( np.log10( imcombmax ), cmap=plt.cm.Greys)
-# plt.colorbar()
-
-#
-# F1max = fft2(imcombmax)
-#
-# # Now shift the quadrants around so that low spatial frequencies are in
-# # the center of the 2D fourier transformed image.
-# F2max = fftshift( F1max )
-#
-# # Calculate a 2D power spectrum
-# psd2Dmax = np.abs( F2max )**2
-#
-# # Calculate the azimuthally averaged 1D power spectrum
-# psd1Dmax = azimuthalAverage(psd2Dmax)
-#
-#
-# F1med = fft2(imcombmed)
-#
-# # Now shift the quadrants around so that low spatial frequencies are in
-# # the center of the 2D fourier transformed image.
-# F2med = fftshift( F1med )
-#
-# # Calculate a 2D power spectrum
-# psd2Dmed = np.abs( F2med )**2
-#
-# # Calculate the azimuthally averaged 1D power spectrum
-# psd1Dmed = azimuthalAverage(psd2Dmed)
-#
-#
-# F1mean = fft2(imcombmean)
-#
-# # Now shift the quadrants around so that low spatial frequencies are in
-# # the center of the 2D fourier transformed image.
-# F2mean = fftshift( F1mean )
-#
-# # Calculate a 2D power spectrum
-# psd2Dmean = np.abs( F2mean )**2
-#
-# # Calculate the azimuthally averaged 1D power spectrum
-# psd1Dmean = azimuthalAverage(psd2Dmean)
-#
-#
-#
-# F1 = fft2(image_data)
-#
-# # Now shift the quadrants around so that low spatial frequencies are in
-# # the center of the 2D fourier transformed image.
-# F2 = fftshift( F1 )
-#
-# # Calculate a 2D power spectrum
-# psd2D = np.abs( F2 )**2
-#
-# # Calculate the azimuthally averaged 1D power spectrum
-# psd1D = azimuthalAverage(psd2D)
-
-
-# import seaborn as sns
-# sns.set()
-
-#
-# plt.clf()
-# plt.semilogy( psd1D ,color='green',label='polarized brightness image')
-# plt.semilogy( psd1Dmed ,color='blue',label='median filtered stack')
-# plt.semilogy( psd1Dmax ,color='red',label='max filtered stack')
-# plt.semilogy( psd1Dmean ,color='orange',label='average filtered stack')
-# plt.xlabel('Spatial Frequency')
-# plt.ylabel('Power')
-# plt.title('Power Spectrum 2014-05-0{} 17:40:00 - 21:40:00'.format(day))
-# plt.legend()
-#
-# #plt.savefig('Power_Spectrum 2014-05-0{}'.format(day))
-#
-#
-# plt.show()
 
 timelist = []
 for i in headlist:
@@ -280,11 +141,11 @@ hdumed.writeto(pathnew+'/{}_rep_med.fts'.format(year_month_day_print),overwrite=
 
 hdumean = fits.PrimaryHDU(data=imcombmean,header=head)
 #hdumean.writeto('/Users/Chris/Desktop/Goddard Research/FITS Images New/downloaded fits/Background images/All images/rep_avg.fts',overwrite=True)
-hdumean.writeto('/Volumes/Seagate/Chris/2012_Images_match/Representative_Average_Images/{}_rep_avg.fts'.format(year_month_day_print),overwrite=True)
+hdumean.writeto('/Volumes/Seagate/Chris/2012_Images_match/Representative_Average_Images_B/{}_rep_avg.fts'.format(year_month_day_print),overwrite=True)
 
 hdumed = fits.PrimaryHDU(data=imcombmed,header=head)
 #hdumed.writeto('/Users/Chris/Desktop/Goddard Research/FITS Images New/downloaded fits/Background images/All images/rep_med.fts',overwrite=True)
-hdumed.writeto('/Volumes/Seagate/Chris/2012_Images_match/Representative_Median_Images/{}_rep_med.fts'.format(year_month_day_print),overwrite=True)
+hdumed.writeto('/Volumes/Seagate/Chris/2012_Images_match/Representative_Median_Images_B/{}_rep_med.fts'.format(year_month_day_print),overwrite=True)
 #
 # hdumax = fits.PrimaryHDU(data=imcombmax,header=head)
 # #hdumax.writeto('/Users/Chris/Desktop/Goddard Research/FITS Images New/downloaded fits/Background images/All images/rep_max.fts',overwrite=True)
