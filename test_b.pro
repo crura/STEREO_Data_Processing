@@ -1,4 +1,4 @@
-function test, directory
+function test_b, directory
 
   spawn, 'git rev-parse --show-toplevel', git_repo
   data = read_csv(git_repo + '/month_day_pair.csv')
@@ -39,6 +39,7 @@ function test, directory
       sz = size(cat)
       n = n_elements(sz)
       type = sz[n-2]
+      n_images = sz[n-3]
       if (type eq 2) then begin
         printf,1,'file ' + savestring +' produced no rep images'
         break ;if no files found for time period, returns -1, break out of loop if this happens
