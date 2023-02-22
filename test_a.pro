@@ -1,4 +1,4 @@
-function test_b, directory
+function test_a, directory
 
   spawn, 'git rev-parse --show-toplevel', git_repo
   data = read_csv(git_repo + '/month_day_pair.csv')
