@@ -50,7 +50,7 @@ for child in parent_list:
         pass            #pass
     elif child == 'Representative_Images':
         pass
-    elif child.endswith('0_0P4c1B.fts') ==False:
+    elif child.endswith('0_0P4c1A.fts') ==False and child.endswith('0_0P4c1B.fts') ==False:
         print('file: {} incorrectly processed, logging and aborting processing'.format(child))
         # first file logger
         logger = setup_logger('process_logger', '/Volumes/Seagate/Chris/2012_Images_match/process_events.log')
@@ -141,11 +141,11 @@ hdumed.writeto(pathnew+'/{}_rep_med.fts'.format(year_month_day_print),overwrite=
 
 hdumean = fits.PrimaryHDU(data=imcombmean,header=head)
 #hdumean.writeto('/Users/Chris/Desktop/Goddard Research/FITS Images New/downloaded fits/Background images/All images/rep_avg.fts',overwrite=True)
-hdumean.writeto('/Volumes/Seagate/Chris/2012_Images_match/Representative_Average_Images_B/{}_rep_avg.fts'.format(year_month_day_print),overwrite=True)
+hdumean.writeto('/Volumes/Seagate/Chris/2012_Images_match/Representative_Average_Images_A/{}_rep_avg.fts'.format(year_month_day_print),overwrite=True)
 
 hdumed = fits.PrimaryHDU(data=imcombmed,header=head)
 #hdumed.writeto('/Users/Chris/Desktop/Goddard Research/FITS Images New/downloaded fits/Background images/All images/rep_med.fts',overwrite=True)
-hdumed.writeto('/Volumes/Seagate/Chris/2012_Images_match/Representative_Median_Images_B/{}_rep_med.fts'.format(year_month_day_print),overwrite=True)
+hdumed.writeto('/Volumes/Seagate/Chris/2012_Images_match/Representative_Median_Images_A/{}_rep_med.fts'.format(year_month_day_print),overwrite=True)
 #
 # hdumax = fits.PrimaryHDU(data=imcombmax,header=head)
 # #hdumax.writeto('/Users/Chris/Desktop/Goddard Research/FITS Images New/downloaded fits/Background images/All images/rep_max.fts',overwrite=True)
