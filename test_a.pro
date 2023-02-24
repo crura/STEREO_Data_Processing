@@ -25,13 +25,13 @@ function test_a, directory
       ; Download each file given by cor1_pbseries
       secchi_path = getenv('secchi') + '/lz'
       ; if last day of the month, second timestamp is first day of next month
-      if (i EQ fix(arr[-1])) then begin
-        time_1_string = timestamp(year = 2012, month = j, day = i, hour = 16, minute = 35, second = 15)
-        time_2_string = timestamp(year = 2012, month = j+1, day = 1, hour = 0, minute = 45, second = 25)
-      endif else begin
-        time_1_string = timestamp(year = 2012, month = j, day = i, hour = 16, minute = 35, second = 15)
-        time_2_string = timestamp(year = 2012, month = j, day = i+1, hour = 0, minute = 45, second = 25)
-      ENDELSE
+      ;if (i EQ fix(arr[-1])) then begin
+      ;  time_1_string = timestamp(year = 2012, month = j, day = i, hour = 16, minute = 35, second = 15)
+      ;  time_2_string = timestamp(year = 2012, month = j+1, day = 1, hour = 0, minute = 45, second = 25)
+      ;endif else begin
+      time_1_string = timestamp(year = 2012, month = j, day = i, hour = 0, minute = 35, second = 15)
+      time_2_string = timestamp(year = 2012, month = j, day = i, hour = 8, minute = 45, second = 25)
+      ;ENDELSE
       print,j
       print,i
       savestring = timestamp(year = 2012, month = j, day = i)
