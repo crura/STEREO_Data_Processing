@@ -5,9 +5,9 @@ function stereo_process, directory
   ;len = fix(sqrt(n_elements(forward_pb_image)))
   ;dens_2d = reform(dens.field1,len,len)
 
-  spawn, 'mkdir -p /Volumes/Seagate/Chris/2012_Images_match'
-  fname = '/Volumes/Seagate/Chris/2012_Images_match/process_error_log_2012.log'
-  fname2 = '/Volumes/Seagate/Chris/2012_Images_match/process_log_2012.log'
+  spawn, 'mkdir -p /Volumes/Seagate/Chris/2010_Images_match'
+  fname = '/Volumes/Seagate/Chris/2010_Images_match/process_error_log_2012.log'
+  fname2 = '/Volumes/Seagate/Chris/2010_Images_match/process_log_2012.log'
   OPENW,1,fname
   OPENW,2,fname2
 
@@ -67,7 +67,7 @@ function stereo_process, directory
     ENDIF
 
     IF (ISA(con1,/array) EQ 1) THEN BEGIN ; check that the condition returns array indicating images were found
-    spawn, 'mkdir -p /Volumes/Seagate/Chris/2012_Images_match/A/2012' + monthstring +istring
+    spawn, 'mkdir -p /Volumes/Seagate/Chris/2010_Images_match/A/2012' + monthstring +istring
     spawn, 'mkdir -p ' + outstring
 
     a = vso_get(try1[con1],out_dir=outstring,/force)
@@ -76,9 +76,9 @@ function stereo_process, directory
 
     cd, outstring
 
-    spath = '/Volumes/Seagate/Chris/2012_Images_match/A/2012' + monthstring +istring + '/processed'
+    spath = '/Volumes/Seagate/Chris/2010_Images_match/A/2012' + monthstring +istring + '/processed'
     spawn, 'rm *s5c1A.fts'
-    spawn, 'mkdir -p /Volumes/Seagate/Chris/2012_Images_match/A/2012' + monthstring +istring + '/processed'
+    spawn, 'mkdir -p /Volumes/Seagate/Chris/2010_Images_match/A/2012' + monthstring +istring + '/processed'
     filelist = FILE_SEARCH('*.fts')
     k=0
     success_condition = 0
@@ -121,10 +121,10 @@ function stereo_process, directory
       printf,2,'file 2012' + monthstring +istring + ' rep image represents ' + process_count.Compress() + ' images and has size of ' + image_shape
     endif
 
-    spath = '/Volumes/Seagate/Chris/2012_Images_match/A/2012' + monthstring +istring + '/processed'
+    spath = '/Volumes/Seagate/Chris/2010_Images_match/A/2012' + monthstring +istring + '/processed'
     year_month_day_print = '2012_' + monthstring + '_' + istring
-    save,spath,year_month_day_print,filename='/Volumes/Seagate/Chris/2012_Images_match/parameters.sav'
-    spawn, 'cp /Volumes/Seagate/Chris/2012_Images_match/parameters.sav /Volumes/Seagate/Chris/2012_Images_match/parameters_safe.sav'
+    save,spath,year_month_day_print,filename='/Volumes/Seagate/Chris/2010_Images_match/parameters.sav'
+    spawn, 'cp /Volumes/Seagate/Chris/2010_Images_match/parameters.sav /Volumes/Seagate/Chris/2010_Images_match/parameters_safe.sav'
 
     spawn, 'python /Users/crura/Desktop/Research/idlroutines/STEREO_Data_Processing/produce_representative_image.py'
 
@@ -238,8 +238,8 @@ endforeach
   ;
   ;   spath = '/Volumes/Seagate/Chris/2008_Images/A/2008' + monthstring +istring + '/processed'
   ;   year_month_day_print = '2008_' + monthstring + '_' + istring
-  ;   save,spath,year_month_day_print,filename='/Volumes/Seagate/Chris/2012_Images_match/parameters.sav'
-  ;   spawn, 'cp /Volumes/Seagate/Chris/2012_Images_match/parameters.sav /Volumes/Seagate/Chris/2012_Images_match/parameters_safe.sav'
+  ;   save,spath,year_month_day_print,filename='/Volumes/Seagate/Chris/2010_Images_match/parameters.sav'
+  ;   spawn, 'cp /Volumes/Seagate/Chris/2010_Images_match/parameters.sav /Volumes/Seagate/Chris/2010_Images_match/parameters_safe.sav'
   ;
   ;   spawn, 'python /Users/crura/Desktop/Research/idlroutines/STEREO_Data_Processing/produce_representative_image.py'
   ;
