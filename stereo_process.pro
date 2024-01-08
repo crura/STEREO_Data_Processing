@@ -6,8 +6,8 @@ function stereo_process, directory
   ;dens_2d = reform(dens.field1,len,len)
 
   spawn, 'mkdir -p /Volumes/Seagate/Chris/2010_Images_match'
-  fname = '/Volumes/Seagate/Chris/2010_Images_match/process_error_log_2012.log'
-  fname2 = '/Volumes/Seagate/Chris/2010_Images_match/process_log_2012.log'
+  fname = '/Volumes/Seagate/Chris/2010_Images_match/process_error_log_2010.log'
+  fname2 = '/Volumes/Seagate/Chris/2010_Images_match/process_log_2010.log'
   OPENW,1,fname
   OPENW,2,fname2
 
@@ -50,10 +50,10 @@ function stereo_process, directory
     istring_ytd = istring_ytd.Compress()
     ENDELSE
 
-    outstring = SCC_DATA_PATH('a',TYPE='seq',TEL='cor1',date='2012'+ monthstring +istring)
-    try1 = vso_search(date='2012/' + monthstring + '/' + istring + 'T16:35:00-2012/' + monthstring + '/' + istring_tmw + 'T00:45:25', inst='COR1',source='STEREO-A',info=0,out_dir=outstring)
-    try2 = vso_search(date='2012/' + monthstring + '/' + istring + 'T16:35:09-2012/' + monthstring + '/' + istring_tmw + 'T00:45:25', inst='COR1',source='STEREO-A',sample=600,info=120,out_dir=outstring)
-    try3 = vso_search(date='2012/' + monthstring + '/' + istring + 'T16:35:18-2012/' + monthstring + '/' + istring_tmw + 'T00:45:25', inst='COR1',source='STEREO-A',sample=600,info=240,out_dir=outstring)
+    outstring = SCC_DATA_PATH('a',TYPE='seq',TEL='cor1',date='2010'+ monthstring +istring)
+    try1 = vso_search(date='2010/' + monthstring + '/' + istring + 'T16:35:00-2010/' + monthstring + '/' + istring_tmw + 'T00:45:25', inst='COR1',source='STEREO-A',info=0,out_dir=outstring)
+    try2 = vso_search(date='2010/' + monthstring + '/' + istring + 'T16:35:09-2010/' + monthstring + '/' + istring_tmw + 'T00:45:25', inst='COR1',source='STEREO-A',sample=600,info=120,out_dir=outstring)
+    try3 = vso_search(date='2010/' + monthstring + '/' + istring + 'T16:35:18-2010/' + monthstring + '/' + istring_tmw + 'T00:45:25', inst='COR1',source='STEREO-A',sample=600,info=240,out_dir=outstring)
 
     IF (ISA(try1,/array) EQ 1) THEN BEGIN ; check that vso_search returns array indicating images were found
     con1 = WHERE(try1.info eq 'COR1 ;  ; SERIES ; 0deg. ; 512x512')
@@ -67,7 +67,7 @@ function stereo_process, directory
     ENDIF
 
     IF (ISA(con1,/array) EQ 1) THEN BEGIN ; check that the condition returns array indicating images were found
-    spawn, 'mkdir -p /Volumes/Seagate/Chris/2010_Images_match/A/2012' + monthstring +istring
+    spawn, 'mkdir -p /Volumes/Seagate/Chris/2010_Images_match/A/2010' + monthstring +istring
     spawn, 'mkdir -p ' + outstring
 
     a = vso_get(try1[con1],out_dir=outstring,/force)
@@ -76,9 +76,9 @@ function stereo_process, directory
 
     cd, outstring
 
-    spath = '/Volumes/Seagate/Chris/2010_Images_match/A/2012' + monthstring +istring + '/processed'
+    spath = '/Volumes/Seagate/Chris/2010_Images_match/A/2010' + monthstring +istring + '/processed'
     spawn, 'rm *s5c1A.fts'
-    spawn, 'mkdir -p /Volumes/Seagate/Chris/2010_Images_match/A/2012' + monthstring +istring + '/processed'
+    spawn, 'mkdir -p /Volumes/Seagate/Chris/2010_Images_match/A/2010' + monthstring +istring + '/processed'
     filelist = FILE_SEARCH('*.fts')
     k=0
     success_condition = 0
@@ -88,14 +88,14 @@ function stereo_process, directory
       IF Error_status NE 0 THEN BEGIN
         PRINT, 'Error index: ', Error_status
         PRINT, 'Error message: ', !ERROR_STATE.MSG
-        printf,1,'file ' + '2012'+monthstring +istring+' incorrectly produced rep image'
+        printf,1,'file ' + '2010'+monthstring +istring+' incorrectly produced rep image'
         ; Handle the error by breaking
         break
         CATCH, /CANCEL
       ENDIF
 
       IF (filelist[k].EndsWith('0_s4c1A.fts') EQ 1) AND (filelist[k+1].EndsWith('0_s4c1A.fts') EQ 1) AND (filelist[k+2].EndsWith('0_s4c1A.fts') EQ 1) THEN BEGIN
-          printf,1,'file ' + '2012'+monthstring +istring+' produced no rep images'
+          printf,1,'file ' + '2010'+monthstring +istring+' produced no rep images'
           break
       ENDIF ELSE IF (filelist[k].EndsWith('s4c1A.fts') EQ 1) AND (filelist[k+1].EndsWith('s4c1A.fts') EQ 1) AND (filelist[k+2].EndsWith('s4c1A.fts') EQ 1) THEN BEGIN
 
@@ -118,11 +118,11 @@ function stereo_process, directory
       str = string(image_size[0])
       str1 = string(image_size[1])
       image_shape = str.Compress() + 'x' + str1.Compress()
-      printf,2,'file 2012' + monthstring +istring + ' rep image represents ' + process_count.Compress() + ' images and has size of ' + image_shape
+      printf,2,'file 2010' + monthstring +istring + ' rep image represents ' + process_count.Compress() + ' images and has size of ' + image_shape
     endif
 
-    spath = '/Volumes/Seagate/Chris/2010_Images_match/A/2012' + monthstring +istring + '/processed'
-    year_month_day_print = '2012_' + monthstring + '_' + istring
+    spath = '/Volumes/Seagate/Chris/2010_Images_match/A/2010' + monthstring +istring + '/processed'
+    year_month_day_print = '2010_' + monthstring + '_' + istring
     save,spath,year_month_day_print,filename='/Volumes/Seagate/Chris/2010_Images_match/parameters.sav'
     spawn, 'cp /Volumes/Seagate/Chris/2010_Images_match/parameters.sav /Volumes/Seagate/Chris/2010_Images_match/parameters_safe.sav'
 
@@ -130,14 +130,14 @@ function stereo_process, directory
 
     ENDIF ELSE BEGIN
     IF (ISA(con1,/array) NE 1) THEN begin
-      printf,1,'file ' + '2012'+monthstring +istring+' produced no rep images'
+      printf,1,'file ' + '2010'+monthstring +istring+' produced no rep images'
       PRINT, 'vso_search returned no results, moving to next iteration'
     endif
     ENDELSE
 
     ENDIF ELSE BEGIN
     IF (ISA(try1,/array) NE 1) THEN begin
-      printf,1,'file ' + '2012'+monthstring +istring+' produced no rep images'
+      printf,1,'file ' + '2010'+monthstring +istring+' produced no rep images'
       PRINT, 'vso_search returned no results, moving to next iteration'
     endif
     ENDELSE
