@@ -84,7 +84,7 @@ jobs:
               done 
           else 
               echo "Error: The specified parent directory does not exist." &&
-          fi 
+          fi &&
           cat) |
           /Users/crura/Documents/bin/ssw
           deactivate
