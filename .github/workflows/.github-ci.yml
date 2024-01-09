@@ -27,6 +27,17 @@ jobs:
       - uses: actions/checkout@v3
 
 
+      - name: Ingest Data Files
+        run: |
+          source /Users/crura/miniconda3/etc/profile.d/conda.sh &&
+          conda init bash &&
+          conda activate test_env &&
+          python3 -m venv env &&
+          source env/bin/activate &&
+          pip install -r requirements.txt &&
+          python ingest_data_files.py
+          deactivate
+
 
 
       # Runs a set of commands using the runners shell
@@ -74,7 +85,7 @@ jobs:
           echo ".compile -v '$git_repo/stereo_process_new.pro'" &&
 
           # Specify the parent directory to loop through its subdirectories
-          parent_directory="/Volumes/Seagate/Chris/2010_Images_match/A/test" &&
+          parent_directory="/Volumes/Seagate/Chris/2010_Images_match_test/A" &&
 
           # Loop through subdirectories
           for dir in "$parent_directory"/*/; do
@@ -83,7 +94,7 @@ jobs:
           done
 
           # Specify the parent directory to loop through its subdirectories
-          parent_directory="/Volumes/Seagate/Chris/2010_Images_match/B/test" &&
+          parent_directory="/Volumes/Seagate/Chris/2010_Images_match_test/B" &&
 
           # Loop through subdirectories
           for dir in "$parent_directory"/*/; do
@@ -94,3 +105,20 @@ jobs:
           /Users/crura/Documents/bin/ssw
           deactivate
 
+
+      - name: Produce Rep Images
+        run: |
+          source /Users/crura/miniconda3/etc/profile.d/conda.sh &&
+          conda init bash &&
+          conda activate test_env &&
+          python3 -m venv env &&
+          source env/bin/activate &&
+          pip install -r requirements.txt &&
+          python produce_representative_image.py
+          deactivate
+
+        # - uses: actions/upload-artifact@v3
+        #   with:
+        #     name: output-plots
+        #     path: /Users/crura/Desktop/Research/github/actions-runner/_work/Image-Coalignment/Image-Coalignment/Output/Plots
+        #     retention-days: 30

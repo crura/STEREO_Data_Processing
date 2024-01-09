@@ -10,7 +10,7 @@ import shutil
 repo = git.Repo('.', search_parent_directories=True)
 repo_path = repo.working_tree_dir
 
-main_path = Path('/Volumes/Seagate/Chris/2010_Images_match')
+main_path = Path('/Volumes/Seagate/Chris/2010_Images_match_test')
 
 client = vso.VSOClient()
 
