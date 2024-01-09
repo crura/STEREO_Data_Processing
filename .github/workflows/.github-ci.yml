@@ -76,10 +76,10 @@ jobs:
           parent_directory="/Volumes/Seagate/Chris/2010_Images_match/B/test" &&
 
           # Loop through subdirectories
-          for dir in "$parent_directory"/*/; do &&
+          for dir in "$parent_directory"/*/; do
               # Call the custom function for each subdirectory
-              echo "stereo_process_new("$dir")" &&
-          done &&
+              echo "stereo_process_new("$dir")"
+          done
           cat) |
           /Users/crura/Documents/bin/ssw
           deactivate
