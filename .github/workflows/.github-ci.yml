@@ -52,12 +52,12 @@ jobs:
 
           # Define your custom function
           function process_directory {
-              local current_directory="$1"
+              local current_directory="$1" &&
               
               # Your custom logic here
               # For example, print the directory name
-              echo "Processing directory: $current_directory"
-              echo "stereo_process_new('$current_directory')"
+              echo "Processing directory: $current_directory" &&
+              echo "stereo_process_new('$current_directory')" &&
               
               # Add your additional logic here
               # ...
