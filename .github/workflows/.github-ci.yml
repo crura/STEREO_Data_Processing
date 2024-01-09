@@ -72,7 +72,19 @@ jobs:
           echo ".compile -v '/Users/crura/SSW/gen/idl/util/default.pro'" &&
           echo ".compile -v '/Users/crura/IDLWorkspace/Default/linspace.pro'" &&
           echo ".compile -v '$git_repo/stereo_process_new.pro'" &&
-          echo "stereo_process_new('/Volumes/Seagate/Chris/2010_Images_match/B/test')" &&
+          # Specify the parent directory to loop through its subdirectories
+          parent_directory="/Volumes/Seagate/Chris/2010_Images_match/B/test" 
+
+          # Check if the specified directory exists
+          if [ -d "$parent_directory" ]; then 
+              # Loop through subdirectories
+              for dir in "$parent_directory"/*/; do 
+                  # Call the custom function for each subdirectory
+                  echo "stereo_process_new("$dir")" 
+              done 
+          else 
+              echo "Error: The specified parent directory does not exist." &&
+          fi 
           cat) |
           /Users/crura/Documents/bin/ssw
           deactivate
