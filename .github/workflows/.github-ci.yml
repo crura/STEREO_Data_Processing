@@ -41,8 +41,6 @@ jobs:
           source env/bin/activate &&
           pip install -r requirements.txt &&
           git_repo=$(git rev-parse --show-toplevel) &&
-          # export SSW /Users/crura/SSW
-          # source $SSW/gen/setup/setup.ssw \loud
           export IDL_DIR="/Applications/harris/idl89" &&
           export secchi="/Volumes/Seagate/Chris/sswdb/secchi" &&
           export SECCHI_BKG="/Users/crura/stereo/secchi/backgrounds" &&
