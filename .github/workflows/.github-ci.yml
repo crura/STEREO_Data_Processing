@@ -78,7 +78,7 @@ jobs:
           # Loop through subdirectories
           for dir in "$parent_directory"/*/; do
               # Call the custom function for each subdirectory
-              echo "stereo_process_new("$dir")"
+              echo "stereo_process_new('$dir')"
           done
           cat) |
           /Users/crura/Documents/bin/ssw
