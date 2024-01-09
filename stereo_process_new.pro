@@ -7,10 +7,10 @@ function stereo_process_new, directory
 ;   ;dens_2d = reform(dens.field1,len,len)
 
 ;   spawn, 'mkdir -p /Volumes/Seagate/Chris/2010_Images_match'
-;   fname = '/Volumes/Seagate/Chris/2010_Images_match/process_error_log_2010.log'
-;   fname2 = '/Volumes/Seagate/Chris/2010_Images_match/process_log_2010.log'
-;   OPENW,1,fname
-;   OPENW,2,fname2
+  fname = '/Volumes/Seagate/Chris/2010_Images_match/process_error_log_2010.log'
+  fname2 = '/Volumes/Seagate/Chris/2010_Images_match/process_log_2010.log'
+  OPENW,1,fname
+  OPENW,2,fname2
 
 ;   list1 = data.field1
 ;   list2 = data.field2
@@ -120,7 +120,8 @@ function stereo_process_new, directory
       str = string(image_size[0])
       str1 = string(image_size[1])
       image_shape = str.Compress() + 'x' + str1.Compress()
-      printf,2,'file' + ' rep image represents ' + process_count.Compress() + ' images and has size of ' + image_shape
+      printf,2,'file ' + directory + ' rep image represents ' + process_count.Compress() + ' images and has size of ' + image_shape
+      success_condition = 0
     endif
 
 ;     spath = '/Volumes/Seagate/Chris/2010_Images_match/A/2010' + monthstring +istring + '/processed'
@@ -262,8 +263,8 @@ function stereo_process_new, directory
 ;   ;
 ;   ; ENDFOR
 
-; close,1
-; close,2
+close,1
+close,2
 
 
 END
