@@ -72,7 +72,7 @@ jobs:
           echo ".compile -v '/Users/crura/SSW/gen/idl/util/default.pro'" &&
           echo ".compile -v '/Users/crura/IDLWorkspace/Default/linspace.pro'" &&
           echo ".compile -v '$git_repo/stereo_process_new.pro'" &&
-          echo "stereo_process_new()" &&
+          echo "stereo_process_new('/Volumes/Seagate/Chris/2010_Images_match/B/test')" &&
           cat) |
           /Users/crura/Documents/bin/ssw
           deactivate
