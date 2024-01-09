@@ -21,10 +21,10 @@ function stereo_process_new, directory
         CATCH, /CANCEL
       ENDIF
 
-      IF (filelist[k].EndsWith('0_s4c1a.fts') EQ 1) AND (filelist[k+1].EndsWith('0_s4c1a.fts') EQ 1) AND (filelist[k+2].EndsWith('0_s4c1a.fts') EQ 1) THEN BEGIN
+      IF ((filelist[k].EndsWith('0_s4c1a.fts') EQ 1) AND (filelist[k+1].EndsWith('0_s4c1a.fts') EQ 1) AND (filelist[k+2].EndsWith('0_s4c1a.fts') EQ 1)) OR ((filelist[k].EndsWith('0_s4c1b.fts') EQ 1) AND (filelist[k+1].EndsWith('0_s4c1b.fts') EQ 1) AND (filelist[k+2].EndsWith('b_s4c1a.fts') EQ 1)) THEN BEGIN
           printf,1,'file ' +' produced no rep images'
         ;   break
-      ENDIF ELSE IF (filelist[k].EndsWith('0_s4c1a.fts') EQ 1) AND (filelist[k+1].EndsWith('9_s4c1a.fts') EQ 1) AND (filelist[k+2].EndsWith('8_s4c1a.fts') EQ 1) THEN BEGIN
+      ENDIF ELSE IF ((filelist[k].EndsWith('0_s4c1a.fts') EQ 1) AND (filelist[k+1].EndsWith('9_s4c1a.fts') EQ 1) AND (filelist[k+2].EndsWith('8_s4c1a.fts') EQ 1)) OR ((filelist[k].EndsWith('0_s4c1b.fts') EQ 1) AND (filelist[k+1].EndsWith('9_s4c1b.fts') EQ 1) AND (filelist[k+2].EndsWith('8_s4c1b.fts') EQ 1)) THEN BEGIN
 
         file = string(filelist[k:k+2])
         secchi_prep, file, headd, imd, /CALIMG_OFF, /NOCALFAC,/rotate_on,  /write_fts, savepath = spath,/polariz_on, /pB
