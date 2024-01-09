@@ -272,5 +272,10 @@ webencodings==0.5.1
 # xarray @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_ba3w2rvoxd/croot/xarray_1689041477488/work
 # yapf @ file:///tmp/build/80754af9/yapf_1615749224965/work
 yarl==1.8.2
-zeep==4.1.0
+
 zipp==3.15.0
+beautifulsoup4>=4.8.0
+drms>=0.6.1,<0.7.0
+python-dateutil>=2.8.0
+tqdm>=4.32.1
+zeep>=3.4.0
