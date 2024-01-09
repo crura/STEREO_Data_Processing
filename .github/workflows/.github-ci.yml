@@ -72,6 +72,16 @@ jobs:
           echo ".compile -v '/Users/crura/SSW/gen/idl/util/default.pro'" &&
           echo ".compile -v '/Users/crura/IDLWorkspace/Default/linspace.pro'" &&
           echo ".compile -v '$git_repo/stereo_process_new.pro'" &&
+
+          # Specify the parent directory to loop through its subdirectories
+          parent_directory="/Volumes/Seagate/Chris/2010_Images_match/A/test" &&
+
+          # Loop through subdirectories
+          for dir in "$parent_directory"/*/; do
+              # Call the custom function for each subdirectory
+              echo "stereo_process_new('$dir')"
+          done
+
           # Specify the parent directory to loop through its subdirectories
           parent_directory="/Volumes/Seagate/Chris/2010_Images_match/B/test" &&
 
