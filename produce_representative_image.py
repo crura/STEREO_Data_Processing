@@ -169,10 +169,10 @@ def process_images(control_path):
     print('finished')
 
 
-main_path_a = Path('/Volumes/Seagate/Chris/2010_Images_match_test/A')
+main_path_a = Path('/Volumes/Seagate/Chris/2010_Images_match/A')
 process_images(main_path_a)
 
-main_path_b = Path('/Volumes/Seagate/Chris/2010_Images_match_test/B')
+main_path_b = Path('/Volumes/Seagate/Chris/2010_Images_match/B')
 process_images(main_path_b)
 # fits_dir = pathnew+'/{}_rep_med.fts'.format(year_month_day_print)
 

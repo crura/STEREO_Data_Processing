@@ -85,7 +85,7 @@ jobs:
           echo ".compile -v '$git_repo/stereo_process_new.pro'" &&
 
           # Specify the parent directory to loop through its subdirectories
-          parent_directory="/Volumes/Seagate/Chris/2010_Images_match_test/A" &&
+          parent_directory="/Volumes/Seagate/Chris/2010_Images_match/A" &&
 
           # Loop through subdirectories
           for dir in "$parent_directory"/*/; do
@@ -94,7 +94,7 @@ jobs:
           done
 
           # Specify the parent directory to loop through its subdirectories
-          parent_directory="/Volumes/Seagate/Chris/2010_Images_match_test/B" &&
+          parent_directory="/Volumes/Seagate/Chris/2010_Images_match/B" &&
 
           # Loop through subdirectories
           for dir in "$parent_directory"/*/; do
