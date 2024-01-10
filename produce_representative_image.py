@@ -15,6 +15,15 @@ from scipy.fft import fftshift # Shift the zero-frequency component to the cente
 #from radialProfile.py import azimuthalAverage
 # import radialProfile
 from scipy.io import readsav
+import yaml
+ 
+with open("config.yaml", "r") as stream:
+    try:
+        yaml_parse = yaml.safe_load(stream)
+    except yaml.YAMLError as exc:
+        print(exc)
+
+input_path = yaml_parse['input_path']
 
 import logging
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
@@ -169,10 +178,10 @@ def process_images(control_path):
     print('finished')
 
 
-main_path_a = Path('/Volumes/Seagate/Chris/2010_Images_match/A')
+main_path_a = Path(input_path + '/A')
 process_images(main_path_a)
 
-main_path_b = Path('/Volumes/Seagate/Chris/2010_Images_match/B')
+main_path_b = Path(input_path + '/B')
 process_images(main_path_b)
 # fits_dir = pathnew+'/{}_rep_med.fts'.format(year_month_day_print)
 

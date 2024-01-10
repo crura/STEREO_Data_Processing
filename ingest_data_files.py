@@ -6,11 +6,20 @@ from pathlib import Path
 import git
 import os
 import shutil
+import yaml
+ 
+with open("config.yaml", "r") as stream:
+    try:
+        yaml_parse = yaml.safe_load(stream)
+    except yaml.YAMLError as exc:
+        print(exc)
+
+input_path = yaml_parse['input_path']
 
 repo = git.Repo('.', search_parent_directories=True)
 repo_path = repo.working_tree_dir
 
-main_path = Path('/Volumes/Seagate/Chris/2010_Images_match')
+main_path = Path(input_path)
 
 client = vso.VSOClient()
 
