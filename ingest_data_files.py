@@ -44,11 +44,17 @@ for i in range(CR_length.days):
     path_processed_a.mkdir(parents=True, exist_ok=True)
     path_processed_b = Path(os.path.join(path_b, 'processed'))
     path_processed_b.mkdir(parents=True, exist_ok=True)
-
-    client.fetch(client.search(
+    
+    query_table = client.search(
         a.Time(time1, time2), 
         a.Instrument.secchi, a.Detector.cor1,
-        response_format="table"), path=path_download)
+        response_format="table")
+    
+    for x in query_table:
+        # If not a sequential image, remove from query table
+        if "seq" not in x['fileid']:
+            query_table.remove_row(x.index)
+    client.fetch(query_table, path='/Users/crura/Desktop/Research/idlroutines/STEREO_Data_Processing/test_path')
     # subprocess.run(["mkdir", "-p", time1.strftime('%m-%d-%Y')])
     # subprocess.run(["cd", time1.strftime('%m-%d-%Y')])
     # subprocess.run(["mkdir", "-p", 'A'])
