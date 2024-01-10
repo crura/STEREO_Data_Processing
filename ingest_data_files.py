@@ -63,7 +63,7 @@ for i in range(CR_length.days):
         # If not a sequential image, remove from query table
         if "seq" not in x['fileid']:
             query_table.remove_row(x.index)
-    client.fetch(query_table, path='/Users/crura/Desktop/Research/idlroutines/STEREO_Data_Processing/test_path')
+    client.fetch(query_table, path=path_download)
     # subprocess.run(["mkdir", "-p", time1.strftime('%m-%d-%Y')])
     # subprocess.run(["cd", time1.strftime('%m-%d-%Y')])
     # subprocess.run(["mkdir", "-p", 'A'])
