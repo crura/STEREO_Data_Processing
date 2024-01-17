@@ -6,11 +6,11 @@ function stereo_process_new, directory
 ;   ;len = fix(sqrt(n_elements(forward_pb_image)))
 ;   ;dens_2d = reform(dens.field1,len,len)
 
-;   spawn, 'mkdir -p /Volumes/Seagate/Chris/2010_Images_match'
-  fname = '/Volumes/Seagate/Chris/2010_Images_match/process_error_log_2010.log'
-  fname2 = '/Volumes/Seagate/Chris/2010_Images_match/process_log_2010.log'
-  OPENW,1,fname
-  OPENW,2,fname2
+  ; spawn, 'mkdir -p /Volumes/Seagate/Chris/2010_Images_match'  
+  ; fname = '/Volumes/Seagate/Chris/2010_Images_match/process_error_log_2010.log'
+  ; fname2 = '/Volumes/Seagate/Chris/2010_Images_match/process_log_2010.log'
+  ; OPENW,1,fname
+  ; OPENW,2,fname2
 
 ;   list1 = data.field1
 ;   list2 = data.field2
