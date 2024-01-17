@@ -15,6 +15,12 @@ with open("config.yaml", "r") as stream:
         print(exc)
 
 input_path = yaml_parse['input_path']
+start_year = yaml_parse['start_year']
+start_month = yaml_parse['start_month']
+start_day = yaml_parse['start_day']
+end_year = yaml_parse['end_year']
+end_month = yaml_parse['end_month']
+end_day = yaml_parse['end_day']
 
 repo = git.Repo('.', search_parent_directories=True)
 repo_path = repo.working_tree_dir
@@ -33,8 +39,8 @@ def determine_datetime_from_decimal_day(year, month, day_dec):
     return result
 
 
-start_datetime = determine_datetime_from_decimal_day(2010,5,20.0002) # CR 2097 begin
-end_datetime = determine_datetime_from_decimal_day(2010,6,16.2041) # CR 2098 begin
+start_datetime = determine_datetime_from_decimal_day(start_year,start_month,start_day) # CR 2097 begin
+end_datetime = determine_datetime_from_decimal_day(end_year,end_month,end_day) # CR 2098 begin
 CR_length = end_datetime - start_datetime
 
 
