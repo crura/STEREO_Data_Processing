@@ -111,18 +111,19 @@ function stereo_process_new, directory
       ENDELSE
     endwhile
 
-    if (success_condition EQ 1) then begin
-      process_count = string(n_elements(filelist)/3)
-      cd, spath
-      file_list_2 = FILE_SEARCH('*.fts')
-      fitsnew = readfits(file_list_2[-1])
-      image_size = size(fitsnew,/dimensions)
-      str = string(image_size[0])
-      str1 = string(image_size[1])
-      image_shape = str.Compress() + 'x' + str1.Compress()
-      printf,2,'file ' + directory + ' rep image represents ' + process_count.Compress() + ' images and has size of ' + image_shape
-      success_condition = 0
-    endif
+    ; if (success_condition EQ 1) then begin
+    ;   process_count = string(n_elements(filelist)/3)
+    ;   cd, spath
+    ;   file_list_2 = FILE_SEARCH('*.fts')
+    ;   fitsnew = readfits(file_list_2[-1])
+    ;   image_size = size(fitsnew,/dimensions)
+    ;   str = string(image_size[0])
+    ;   str1 = string(image_size[1])
+    ;   image_shape = str.Compress() + 'x' + str1.Compress()
+    ;   printf,2,'file ' + directory + ' rep image represents ' + process_count.Compress() + ' images and has size of ' + image_shape
+    ;   success_condition = 0
+    ;   k= k+1
+    ; endif
 
 ;     spath = '/Volumes/Seagate/Chris/2010_Images_match/A/2010' + monthstring +istring + '/processed'
 ;     year_month_day_print = '2010_' + monthstring + '_' + istring
