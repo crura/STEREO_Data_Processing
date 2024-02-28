@@ -1,9 +1,9 @@
-input_path: /Volumes/Seagate/Chris/Data_To_Move/CR2100
+input_path: /Users/crura/Desktop/Research/github/Test_Suite/Image-Coalignment/STEREO_Data_Processing/Test_Data
 
-start_year: 2010
+start_year: 2017
 start_month: 8
-start_day: 9.6180
+start_day: 16.47715 
 
-end_year: 2010
+end_year: 2017
 end_month: 9
-end_day: 5.8614
+end_day: 12.72881 
