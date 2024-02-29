@@ -137,8 +137,8 @@ jobs:
           python produce_representative_image.py
           deactivate
 
-        # - uses: actions/upload-artifact@v3
-        #   with:
-        #     name: output-plots
-        #     path: /Users/crura/Desktop/Research/github/actions-runner/_work/Image-Coalignment/Image-Coalignment/Output/Plots
-        #     retention-days: 30
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Rep Images
+          path: /Volumes/Seagate/Chris/Paper_1_Images/A/Representative_Images
+          retention-days: 30
