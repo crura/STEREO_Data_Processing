@@ -139,6 +139,12 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: Rep Images
+          name: Rep Images A
           path: /Volumes/Seagate/Chris/Paper_1_Images/A/Representative_Images
+          retention-days: 30
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Rep Images B
+          path: /Volumes/Seagate/Chris/Paper_1_Images/B/Representative_Images
           retention-days: 30

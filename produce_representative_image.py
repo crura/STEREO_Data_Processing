@@ -186,7 +186,7 @@ def process_images(control_path):
 
 
 main_path_a = Path(input_path + '/A')
-# process_images(main_path_a)
+process_images(main_path_a)
 
 main_path_b = Path(input_path + '/B')
 process_images(main_path_b)
