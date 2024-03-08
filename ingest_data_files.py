@@ -46,7 +46,7 @@ CR_length = end_datetime - start_datetime
 
 for i in range(CR_length.days):
     time1 = start_datetime + timedelta(days=i)
-    time2 = time1 + timedelta(hours=8, seconds=18)
+    time2 = time1 + timedelta(days=i+1)
     str_time = time1.strftime('%m-%d-%Y')
 
     path_a = Path(os.path.join(main_path, 'A', str_time))
