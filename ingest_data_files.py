@@ -7,6 +7,8 @@ import git
 import os
 import shutil
 import yaml
+from sunpy.net import Fido
+import urllib.request
  
 with open("config.yaml", "r") as stream:
     try:
@@ -59,17 +61,30 @@ for i in range(CR_length.days):
     path_processed_a.mkdir(parents=True, exist_ok=True)
     path_processed_b = Path(os.path.join(path_b, 'processed'))
     path_processed_b.mkdir(parents=True, exist_ok=True)
-    
-    query_table = client.search(
+
+    # query_table = client.search(
+    #     a.Time(time1, time2), 
+    #     a.Instrument.secchi, a.Detector.cor1,
+    #     response_format="table")
+
+    query_table2 = Fido.search(
         a.Time(time1, time2), 
-        a.Instrument.secchi, a.Detector.cor1,
-        response_format="table")
-    
-    for x in query_table:
+        a.Instrument.secchi, a.Detector.cor1)
+
+    # for x in query_table:
+    #     # If not a sequential image, remove from query table
+    #     if "seq" not in x['fileid']:
+    #         query_table.remove_row(x.index)
+    for x in query_table2[0]:
         # If not a sequential image, remove from query table
         if "seq" not in x['fileid']:
-            query_table.remove_row(x.index)
-    client.fetch(query_table, path=path_download)
+            query_table2[0].remove_row(x.index)
+    # client.fetch(query_table, path=path_download)
+    downloaded_files = Fido.fetch(query_table2, path=path_download)
+    if len(downloaded_files.errors) > 0:
+        print('Errors found in download, retrying on failed files')
+        for i in range(len(downloaded_files.errors)):
+            urllib.request.urlretrieve(downloaded_files.errors[i].url, os.path.join(path_download,downloaded_files.errors[i].url.split('/')[-1]))
     # subprocess.run(["mkdir", "-p", time1.strftime('%m-%d-%Y')])
     # subprocess.run(["cd", time1.strftime('%m-%d-%Y')])
     # subprocess.run(["mkdir", "-p", 'A'])
