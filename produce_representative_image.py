@@ -16,6 +16,7 @@ from scipy.fft import fftshift # Shift the zero-frequency component to the cente
 # import radialProfile
 from scipy.io import readsav
 import yaml
+from datetime import datetime, timedelta
 
 file_path = Path(__file__).resolve()
 repo_path = file_path.parent
@@ -119,16 +120,16 @@ def process_images(control_path):
                     imagelist.append(image_data)
                     head_data = fits.getheader(file)
                     headlist.append(head_data)
-                    fits.getheader(file)
-                    hdul = fits.open(file)#imagelist.append(image_data)
-                    plt.figure()
-                    plt.imshow(image_data, cmap='viridis',vmin=0,interpolation='nearest')
-                    plt.colorbar()
-                    plt.clim(np.mean(image_data),np.mean(image_data)+2*np.std(image_data))
-                    current_cmap = matplotlib.cm.get_cmap()
-                    current_cmap.set_bad(color='red')
-                    plt.title('{}'.format(child))
-                    plt.close()
+                    # fits.getheader(file)
+                    # hdul = fits.open(file)#imagelist.append(image_data)
+                    # plt.figure()
+                    # plt.imshow(image_data, cmap='viridis',vmin=0,interpolation='nearest')
+                    # plt.colorbar()
+                    # plt.clim(np.mean(image_data),np.mean(image_data)+2*np.std(image_data))
+                    # current_cmap = matplotlib.cm.get_cmap()
+                    # current_cmap.set_bad(color='red')
+                    # plt.title('{}'.format(child))
+                    # plt.close()
 
             imcombmean = np.mean(imagelist, axis=0)
             imcombmed = np.median(imagelist, axis=0)
@@ -180,6 +181,64 @@ def process_images(control_path):
             # hdumax = fits.PrimaryHDU(data=imcombmax,header=head)
             # #hdumax.writeto('/Users/Chris/Desktop/Goddard Research/FITS Images New/downloaded fits/Background images/All images/rep_max.fts',overwrite=True)
             # hdumax.writeto('/Volumes/Seagate/Chris/2012_Images_match/Representative_Maximum_Images/{}_rep_max.fts'.format(year_month_day_print),overwrite=True)
+
+            prev_time = None
+            stacks = []
+            current_stack = []
+            stacks_head = []
+            current_stack_head = []
+            fits_files = [f for f in os.listdir(process_path) if f.endswith('.fts')]
+            # Sort files by observation time
+            fits_files.sort(key=lambda f: fits.getheader(os.path.join(process_path,f))['DATE-OBS'])
+            for file in fits_files:
+                file_path = os.path.join(process_path, file)
+                data = fits.getdata(file_path, ext=0)
+                head = fits.getheader(file_path)
+                obs_time = datetime.strptime(head['DATE-OBS'], "%Y-%m-%dT%H:%M:%S.%f")
+                if prev_time is not None and obs_time - prev_time > timedelta(minutes=30):
+                    # Save current stack and start a new one
+                    stacks.append(current_stack)
+                    stacks_head.append(current_stack_head)
+                    current_stack = []
+                    current_stack_head = []
+                current_stack.append(data)
+                current_stack_head.append(head)
+                if prev_time is None or obs_time - prev_time > timedelta(minutes=30):
+                    prev_time = obs_time
+
+            # Append the last stack
+            if current_stack:
+                stacks.append(current_stack)
+            if current_stack_head:
+                stacks_head.append(current_stack_head)
+
+            # make directory for processed stack
+            process_path_stack = Path(os.path.join(control_path, 'Representative_Images', 'Stacks', '30_min'))
+            process_path_stack.mkdir(parents=True, exist_ok=True)
+
+            for i, stack in enumerate(stacks):
+                stack = np.array(stack)
+                mean = np.mean(stack, axis=0)
+                median = np.median(stack, axis=0)
+                head = stacks_head[i][0]
+                obs_time = datetime.strptime(head['DATE-OBS'], "%Y-%m-%dT%H:%M:%S.%f")
+
+                string_time = obs_time.strftime("%Y%m%d_%H%M%S")
+
+                hdumean = fits.PrimaryHDU(data=mean, header=head)
+                hdumean.writeto(f"{process_path_stack}/stack_{string_time}_mean.fts", overwrite=True)
+
+                hdumed = fits.PrimaryHDU(data=median, header=head)
+                hdumed.writeto(f"{process_path_stack}/stack_{string_time}_median.fts", overwrite=True)
+                # calculate time difference between images
+
+                # gather stack of images within 30 minute timespan
+
+                # calculate mean and median of stack
+
+                # save as representative image for time period
+
+
 
 
     print('finished')
