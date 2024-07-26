@@ -29,11 +29,6 @@ jobs:
 
       - name: Ingest Data Files
         run: |
-          source ~/miniconda3/etc/profile.d/conda.sh &&
-          conda init bash &&
-          conda activate test_env &&
-          python3 -m venv env &&
-          source env/bin/activate &&
           pip install -r requirements.txt &&
           python ingest_data_files.py
           deactivate
