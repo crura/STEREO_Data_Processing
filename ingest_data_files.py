@@ -112,7 +112,7 @@ for i in range(CR_length.days):
     # Iterate through files in download directory
     for filename in os.listdir(path_download):
         # Check if the file contains the string pattern 's4c1a' (sequential polarized image from STEREO A)
-        if 's4c1a' in filename:
+        if 's4c1a' or 's4c1A' in filename:
             # Build the full paths for source and destination
             source_path = os.path.join(path_download, filename)
             destination_path = os.path.join(path_a, filename)
@@ -120,7 +120,7 @@ for i in range(CR_length.days):
             # Move the file to directory A
             shutil.move(source_path, destination_path)
         # Check if the file contains the string pattern 's4c1b' (sequential polarized image from STEREO B)
-        elif 's4c1b' in filename:
+        elif 's4c1b' or 's4c1B' in filename:
             # Build the full paths for source and destination
             source_path = os.path.join(path_download, filename)
             destination_path = os.path.join(path_b, filename)
