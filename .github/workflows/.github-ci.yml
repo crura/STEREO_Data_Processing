@@ -29,6 +29,8 @@ jobs:
 
       - name: Ingest Data Files
         run: |
+          python3 -m venv env &&
+          source env/bin/activate &&
           pip install -r requirements.txt &&
           python ingest_data_files.py
           deactivate
