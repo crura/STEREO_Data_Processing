@@ -19,7 +19,7 @@ jobs:
   # This workflow contains a single job called "build"
   run-code:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -29,6 +29,9 @@ jobs:
 
       - name: Ingest Data Files
         run: |
+          source /Users/crura/miniconda3/etc/profile.d/conda.sh &&
+          conda init bash &&
+          conda activate test_env &&
           python3 -m venv env &&
           source env/bin/activate &&
           pip install -r requirements.txt &&
@@ -42,7 +45,7 @@ jobs:
         env:
           ACTIONS_RUNNER_HOOK_JOB_STARTED: /Users/crura/Documents/bin/ssw
         run: |
-          source ~/miniconda3/etc/profile.d/conda.sh &&
+          source /Users/crura/miniconda3/etc/profile.d/conda.sh &&
           conda init bash &&
           conda activate test_env &&
           python3 -m venv env &&
@@ -125,7 +128,7 @@ jobs:
 
       - name: Produce Rep Images
         run: |
-          source ~/miniconda3/etc/profile.d/conda.sh &&
+          source /Users/crura/miniconda3/etc/profile.d/conda.sh &&
           conda init bash &&
           conda activate test_env &&
           python3 -m venv env &&

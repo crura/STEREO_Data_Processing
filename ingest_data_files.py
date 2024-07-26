@@ -9,6 +9,7 @@ import shutil
 import yaml
 from sunpy.net import Fido
 import urllib.request
+import ssl
  
 with open("config.yaml", "r") as stream:
     try:
@@ -81,10 +82,25 @@ for i in range(CR_length.days):
             query_table2[0].remove_row(x.index)
     # client.fetch(query_table, path=path_download)
     downloaded_files = Fido.fetch(query_table2, path=path_download)
+
+    # Create an unverified SSL context
+    context = ssl._create_unverified_context()
+
     if len(downloaded_files.errors) > 0:
         print('Errors found in download, retrying on failed files')
-        for i in range(len(downloaded_files.errors)):
-            urllib.request.urlretrieve(downloaded_files.errors[i].url, os.path.join(path_download,downloaded_files.errors[i].url.split('/')[-1]))
+    for error in downloaded_files.errors:
+        url = error.url
+        file_path = os.path.join(path_download, url.split('/')[-1])
+        
+        # Use urlopen to retrieve the file with the unverified context
+        try:
+            with urllib.request.urlopen(url, context=context) as response, open(file_path, 'wb') as out_file:
+                out_file.write(response.read())
+            print(f"Successfully downloaded {url}")
+        except urllib.error.URLError as e:
+            print(f"URL error: {e}")
+        except Exception as e:
+            print(f"An error occurred: {e}")
     # subprocess.run(["mkdir", "-p", time1.strftime('%m-%d-%Y')])
     # subprocess.run(["cd", time1.strftime('%m-%d-%Y')])
     # subprocess.run(["mkdir", "-p", 'A'])
