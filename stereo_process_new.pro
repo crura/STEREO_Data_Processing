@@ -111,6 +111,12 @@ function stereo_process_new, directory
       ENDELSE
     endwhile
 
+
+
+    ; try1 = vso_search(date='2007/' + monthstring + '/' + istring + 'T09:35:00-2007/' + monthstring + '/' + istring + 'T17:45:25', inst='COR1',source='STEREO-B',info=0,out_dir='/Users/crura/Desktop/Research/2007_Images/B/20070' + monthstring + '0'+istring)
+    ; try2 = vso_search(date='2007/' + monthstring + '/' + istring + 'T09:35:09-2007/' + monthstring + '/' + istring + 'T17:45:25', inst='COR1',source='STEREO-B',sample=600,info=120,out_dir='/Users/crura/Desktop/Research/2007_Images/B/20070' + monthstring + '0'+istring)
+    ; try3 = vso_search(date='2007/' + monthstring + '/' + istring + 'T09:35:18-2007/' + monthstring + '/' + istring + 'T17:45:25', inst='COR1',source='STEREO-B',sample=600,info=240,out_dir='/Users/crura/Desktop/Research/2007_Images/B/20070' + monthstring + '0'+istring)
+
     ; if (success_condition EQ 1) then begin
     ;   process_count = string(n_elements(filelist)/3)
     ;   cd, spath

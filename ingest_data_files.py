@@ -24,6 +24,8 @@ start_day = yaml_parse['start_day']
 end_year = yaml_parse['end_year']
 end_month = yaml_parse['end_month']
 end_day = yaml_parse['end_day']
+start_time = yaml_parse.get('start_time', '09:35:00')  # Default to 09:35:00 if not specified
+end_time = yaml_parse.get('end_time', '17:45:25')      # Default to 17:45:25 if not specified
 
 repo = git.Repo('.', search_parent_directories=True)
 repo_path = repo.working_tree_dir
@@ -41,15 +43,21 @@ def determine_datetime_from_decimal_day(year, month, day_dec):
     result = base + timedelta(seconds=(base.replace(day=base.day + 1) - base).total_seconds() * rem)
     return result
 
+# Parse the start and end times, now including seconds
+start_hour, start_minute, start_second = map(int, start_time.split(':'))
+end_hour, end_minute, end_second = map(int, end_time.split(':'))
 
-start_datetime = determine_datetime_from_decimal_day(start_year,start_month,start_day) # CR 2097 begin
-end_datetime = determine_datetime_from_decimal_day(end_year,end_month,end_day) # CR 2098 begin
+start_datetime = determine_datetime_from_decimal_day(start_year, start_month, start_day) # CR 2097 begin
+end_datetime = determine_datetime_from_decimal_day(end_year, end_month, end_day) # CR 2098 begin
 CR_length = end_datetime - start_datetime
-
 
 for i in range(CR_length.days):
     time1 = start_datetime + timedelta(days=i)
-    time2 = time1 + timedelta(days=i+1)
+    # Add the start time including seconds to the current date
+    time1 = time1.replace(hour=start_hour, minute=start_minute, second=start_second)
+    # Add the end time including seconds to the current date
+    time2 = time1.replace(hour=end_hour, minute=end_minute, second=end_second)
+
     str_time = time1.strftime('%m-%d-%Y')
 
     path_a = Path(os.path.join(main_path, 'A', str_time))
@@ -63,24 +71,15 @@ for i in range(CR_length.days):
     path_processed_b = Path(os.path.join(path_b, 'processed'))
     path_processed_b.mkdir(parents=True, exist_ok=True)
 
-    # query_table = client.search(
-    #     a.Time(time1, time2), 
-    #     a.Instrument.secchi, a.Detector.cor1,
-    #     response_format="table")
-
     query_table2 = Fido.search(
         a.Time(time1, time2), 
         a.Instrument.secchi, a.Detector.cor1)
 
-    # for x in query_table:
-    #     # If not a sequential image, remove from query table
-    #     if "seq" not in x['fileid']:
-    #         query_table.remove_row(x.index)
     for x in query_table2[0]:
         # If not a sequential image, remove from query table
         if "seq" not in x['fileid']:
             query_table2[0].remove_row(x.index)
-    # client.fetch(query_table, path=path_download)
+    
     downloaded_files = Fido.fetch(query_table2, path=path_download)
 
     # Create an unverified SSL context
@@ -101,13 +100,6 @@ for i in range(CR_length.days):
             print(f"URL error: {e}")
         except Exception as e:
             print(f"An error occurred: {e}")
-    # subprocess.run(["mkdir", "-p", time1.strftime('%m-%d-%Y')])
-    # subprocess.run(["cd", time1.strftime('%m-%d-%Y')])
-    # subprocess.run(["mkdir", "-p", 'A'])
-    # subprocess.run(["mkdir", "-p", 'B'])
-    # subprocess.run(["mv", Path.joinpath(path_download, '*s4c1a*'), path_a])
-    # subprocess.run(["mv", Path.joinpath(path_download, '*s4c1b*'), path_b])
-
 
     # Iterate through files in download directory
     for filename in os.listdir(path_download):
@@ -125,7 +117,7 @@ for i in range(CR_length.days):
             source_path = os.path.join(path_download, filename)
             destination_path = os.path.join(path_b, filename)
 
-            # Move the file to directory A
+            # Move the file to directory B
             shutil.move(source_path, destination_path)
 
     # time1 = datetime(2010, 4, 29, 0, 0, 9)
