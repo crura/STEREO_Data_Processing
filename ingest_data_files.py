@@ -18,14 +18,9 @@ with open("config.yaml", "r") as stream:
         print(exc)
 
 input_path = yaml_parse['input_path']
-start_year = yaml_parse['start_year']
-start_month = yaml_parse['start_month']
-start_day = yaml_parse['start_day']
-end_year = yaml_parse['end_year']
-end_month = yaml_parse['end_month']
-end_day = yaml_parse['end_day']
+specific_dates = yaml_parse['specific_dates']  # Expecting a list of dates in 'YYYY-MM-DD' format
 start_time = yaml_parse.get('start_time', '09:35:00')  # Default to 09:35:00 if not specified
-end_time = yaml_parse.get('end_time', '17:45:25')      # Default to 17:45:25 if not specified
+end_time = yaml_parse.get('end_time', '18:35:00')      # Default to 18:35:00 if not specified
 
 repo = git.Repo('.', search_parent_directories=True)
 repo_path = repo.working_tree_dir
@@ -34,29 +29,17 @@ main_path = Path(input_path)
 
 client = vso.VSOClient()
 
-def determine_datetime_from_decimal_day(year, month, day_dec):
-    start = day_dec
-    day = int(start)
-    rem = start - day
-
-    base = datetime(year, month, day)
-    result = base + timedelta(seconds=(base.replace(day=base.day + 1) - base).total_seconds() * rem)
-    return result
-
 # Parse the start and end times, now including seconds
 start_hour, start_minute, start_second = map(int, start_time.split(':'))
 end_hour, end_minute, end_second = map(int, end_time.split(':'))
 
-start_datetime = determine_datetime_from_decimal_day(start_year, start_month, start_day) # CR 2097 begin
-end_datetime = determine_datetime_from_decimal_day(end_year, end_month, end_day) # CR 2098 begin
-CR_length = end_datetime - start_datetime
+# Convert the specific dates from strings to datetime objects
+specific_dates = [datetime.strptime(date_str, '%Y-%m-%d') for date_str in specific_dates]
 
-for i in range(CR_length.days):
-    time1 = start_datetime + timedelta(days=i)
-    # Add the start time including seconds to the current date
-    time1 = time1.replace(hour=start_hour, minute=start_minute, second=start_second)
-    # Add the end time including seconds to the current date
-    time2 = time1.replace(hour=end_hour, minute=end_minute, second=end_second)
+for date in specific_dates:
+    # Set the start and end times for each specific date
+    time1 = date.replace(hour=start_hour, minute=start_minute, second=start_second)
+    time2 = date.replace(hour=end_hour, minute=end_minute, second=end_second)
 
     str_time = time1.strftime('%m-%d-%Y')
 
