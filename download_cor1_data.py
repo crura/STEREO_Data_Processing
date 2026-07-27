@@ -104,7 +104,7 @@ def download_cor1_day(day: datetime) -> list[Path]:
     if downloaded.errors:
         print(
             f"\n{len(downloaded.errors)} of "
-            f"{len(filtered_table)} downloads failed:"
+            f"{len(query)} downloads failed:"
         )
     
         for index, error in enumerate(downloaded.errors[:10], start=1):
