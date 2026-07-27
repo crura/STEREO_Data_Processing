@@ -70,54 +70,42 @@ def download_cor1_day(day: datetime) -> list[Path]:
     end_time = day.replace(
         hour=18,
         minute=35,
-        second=25,
+        second=0,
     )
 
     output_directory = DOWNLOAD_ROOT / date_label
     output_directory.mkdir(parents=True, exist_ok=True)
 
-    LOGGER.info(
-        "%s: searching from %s through %s",
-        date_label,
-        start_time.isoformat(),
-        end_time.isoformat(),
-    )
-
     query = Fido.search(
         a.Time(start_time, end_time),
         a.Instrument.secchi,
-        a.Source(SPACECRAFT),
+        a.Source("STEREO_B"),
         a.Detector.cor1,
     )
-
-    if len(query) == 0:
-        LOGGER.error("%s: no COR1 files found", date_label)
-        return []
 
     downloaded_files = []
 
     for response_table in query:
-        # The filename may be stored in "fileid" or "url",
-        # depending on which data provider returned the result.
-        filename_column = None
-
-        for candidate in ("fileid", "url", "filename"):
-            if candidate in response_table.colnames:
-                filename_column = candidate
-                break
+        filename_column = next(
+            (
+                column
+                for column in ("fileid", "url", "filename")
+                if column in response_table.colnames
+            ),
+            None,
+        )
 
         if filename_column is None:
             raise RuntimeError(
-                f"Could not find a filename column. "
-                f"Available columns: {response_table.colnames}"
+                f"No filename column found in: {response_table.colnames}"
             )
 
-        matching_rows = [
-            str(value).lower().endswith("s4c1b.fts")
-            for value in response_table[filename_column]
+        mask = [
+            str(filename).lower().endswith("s4c1b.fts")
+            for filename in response_table[filename_column]
         ]
 
-        filtered_table = response_table[matching_rows]
+        filtered_table = response_table[mask]
 
         if len(filtered_table) == 0:
             continue
@@ -133,33 +121,13 @@ def download_cor1_day(day: datetime) -> list[Path]:
             if Path(filename).is_file()
         )
 
-    # Do not use a.Sample() here. Sampling could remove one or more images
-    # belonging to a three-image polarization sequence.
-    downloaded = Fido.fetch(
-        query,
-        path=str(output_directory / "{file}"),
-    )
-
-    downloaded_paths = [
-        Path(path)
-        for path in downloaded
-        if Path(path).is_file()
-    ]
-
-    for error in getattr(downloaded, "errors", []):
-        LOGGER.error("%s: download error: %s", date_label, error)
-
-    if not downloaded_paths:
-        LOGGER.error("%s: query succeeded, but no files were downloaded", date_label)
-        return []
-
     LOGGER.info(
-        "%s: downloaded %d COR1 files",
+        "%s: downloaded %d s4c1b files",
         date_label,
-        len(downloaded_paths),
+        len(downloaded_files),
     )
 
-    return sorted(downloaded_paths)
+    return sorted(downloaded_files)
 
 
 def download_year(year: int) -> None:
