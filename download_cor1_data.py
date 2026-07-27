@@ -94,10 +94,44 @@ def download_cor1_day(day: datetime) -> list[Path]:
         LOGGER.error("%s: no COR1 files found", date_label)
         return []
 
-    for x in query[0]:
-        # If not a sequential image, remove from query table
-        if "seq" not in x['fileid']:
-            query[0].remove_row(x.index)
+    downloaded_files = []
+
+    for response_table in query:
+        # The filename may be stored in "fileid" or "url",
+        # depending on which data provider returned the result.
+        filename_column = None
+
+        for candidate in ("fileid", "url", "filename"):
+            if candidate in response_table.colnames:
+                filename_column = candidate
+                break
+
+        if filename_column is None:
+            raise RuntimeError(
+                f"Could not find a filename column. "
+                f"Available columns: {response_table.colnames}"
+            )
+
+        matching_rows = [
+            str(value).lower().endswith("s4c1b.fts")
+            for value in response_table[filename_column]
+        ]
+
+        filtered_table = response_table[matching_rows]
+
+        if len(filtered_table) == 0:
+            continue
+
+        downloaded = Fido.fetch(
+            filtered_table,
+            path=str(output_directory / "{file}"),
+        )
+
+        downloaded_files.extend(
+            Path(filename)
+            for filename in downloaded
+            if Path(filename).is_file()
+        )
 
     # Do not use a.Sample() here. Sampling could remove one or more images
     # belonging to a three-image polarization sequence.
