@@ -20,11 +20,11 @@ DOWNLOAD_ROOT = Path(
 )
 
 PROCESS_LOG = Path(
-    "/Volumes/Seagate/Chris/2012_Images_match/process_log_2014_B.log"
+    "/Volumes/Seagate/Chris/2014_Images/process_log_2014_B.log"
 )
 
 ERROR_LOG = Path(
-    "/Volumes/Seagate/Chris/2012_Images_match/process_error_log_2014_B.log"
+    "/Volumes/Seagate/Chris/2014_Images/process_error_log_2014_B.log"
 )
 
 
