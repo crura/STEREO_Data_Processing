@@ -70,64 +70,67 @@ def download_cor1_day(day: datetime) -> list[Path]:
     end_time = day.replace(
         hour=18,
         minute=35,
-        second=0,
+        second=25,
     )
 
     output_directory = DOWNLOAD_ROOT / date_label
     output_directory.mkdir(parents=True, exist_ok=True)
 
+    LOGGER.info(
+        "%s: searching from %s through %s",
+        date_label,
+        start_time.isoformat(),
+        end_time.isoformat(),
+    )
+
     query = Fido.search(
         a.Time(start_time, end_time),
-        a.Instrument.secchi,
-        a.Source("STEREO_B"),
-        a.Detector.cor1,
+        a.Instrument("SECCHI"),
+        a.Source(SPACECRAFT),
+        a.Detector("COR1"),
     )
 
-    downloaded_files = []
+    if len(query) == 0:
+        LOGGER.error("%s: no COR1 files found", date_label)
+        return []
 
-    for response_table in query:
-        filename_column = next(
-            (
-                column
-                for column in ("fileid", "url", "filename")
-                if column in response_table.colnames
-            ),
-            None,
-        )
+    # Do not use a.Sample() here. Sampling could remove one or more images
+    # belonging to a three-image polarization sequence.
+    downloaded = Fido.fetch(
+        query,
+        path=str(output_directory / "{file}"),
+    )
 
-        if filename_column is None:
-            raise RuntimeError(
-                f"No filename column found in: {response_table.colnames}"
-            )
+    downloaded_paths = [
+        Path(path)
+        for path in downloaded
+        if Path(path).is_file()
+    ]
 
-        mask = [
-            str(filename).lower().endswith("s4c1b.fts")
-            for filename in response_table[filename_column]
-        ]
+    for error in getattr(downloaded, "errors", []):
+        LOGGER.error("%s: download error: %s", date_label, error)
 
-        filtered_table = response_table[mask]
-
-        if len(filtered_table) == 0:
-            continue
-
-        downloaded = Fido.fetch(
-            filtered_table,
-            path=str(output_directory / "{file}"),
-        )
-
-        downloaded_files.extend(
-            Path(filename)
-            for filename in downloaded
-            if Path(filename).is_file()
-        )
+    if not downloaded_paths:
+        LOGGER.error("%s: query succeeded, but no files were downloaded", date_label)
+        return []
 
     LOGGER.info(
-        "%s: downloaded %d s4c1b files",
+        "%s: downloaded %d COR1 files",
         date_label,
-        len(downloaded_files),
+        len(downloaded_paths),
     )
 
-    return sorted(downloaded_files)
+    for filename in os.listdir(DOWNLOAD_ROOT):
+        file_path = os.path.join(DOWNLOAD_ROOT, filename)
+
+        if not os.path.isfile(file_path):
+            continue
+
+        if not filename.lower().endswith("s4c1b.fts"):
+            os.remove(file_path)
+            print(f"Deleted: {file_path}")
+
+    return sorted(downloaded_paths)
 
 
 def download_year(year: int) -> None:
@@ -151,3 +154,21 @@ def download_year(year: int) -> None:
 if __name__ == "__main__":
     DOWNLOAD_ROOT.mkdir(parents=True, exist_ok=True)
     download_year(YEAR)
+    # Iterate through files in download directory
+    for filename in os.listdir(DOWNLOAD_ROOT):
+        # Check if the file contains the string pattern 's4c1a' (sequential polarized image from STEREO A)
+        if 's4c1a' or 's4c1A' in filename:
+            # Build the full paths for source and destination
+            source_path = os.path.join(DOWNLOAD_ROOT, filename)
+            destination_path = os.path.join(DOWNLOAD_FINAL, filename)
+
+            # Move the file to directory A
+            shutil.move(source_path, destination_path)
+        # Check if the file contains the string pattern 's4c1b' (sequential polarized image from STEREO B)
+        elif 's4c1b' or 's4c1B' in filename:
+            # Build the full paths for source and destination
+            source_path = os.path.join(DOWNLOAD_ROOT, filename)
+            destination_path = os.path.join(DOWNLOAD_FINAL, filename)
+
+            # Move the file to directory B
+            shutil.move(source_path, destination_path)
