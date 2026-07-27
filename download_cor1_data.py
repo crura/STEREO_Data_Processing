@@ -100,6 +100,31 @@ def download_cor1_day(day: datetime) -> list[Path]:
         query,
         path=str(output_directory / "{file}"),
     )
+    
+    if downloaded.errors:
+        print(
+            f"\n{len(downloaded.errors)} of "
+            f"{len(filtered_table)} downloads failed:"
+        )
+    
+        for index, error in enumerate(downloaded.errors[:10], start=1):
+            print(f"\nError {index}")
+    
+            if hasattr(error, "url"):
+                print(f"URL: {error.url}")
+    
+            # Different parfive versions use different attribute names
+            error_details = getattr(
+                error,
+                "exception",
+                getattr(error, "response", error),
+            )
+    
+            print(f"Details: {error_details!r}")
+    
+        raise RuntimeError(
+            f"COR1 download failed for {len(downloaded.errors)} files"
+        )
 
     downloaded_paths = [
         Path(path)
