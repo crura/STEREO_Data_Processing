@@ -4,6 +4,7 @@ import calendar
 import logging
 from datetime import datetime
 from pathlib import Path
+from parfive import Downloader
 
 from sunpy.net import Fido, attrs as a
 
@@ -52,6 +53,37 @@ LOGGER.addHandler(process_handler)
 LOGGER.addHandler(error_handler)
 
 
+
+class COR1Downloader(Downloader):
+    """Download only STEREO-B sequential COR1 files."""
+
+    def enqueue_file(
+        self,
+        url,
+        path=None,
+        filename=None,
+        overwrite=None,
+        **kwargs,
+    ):
+        # Do not download n4c1B or any other unwanted files
+        if not url.lower().endswith("s4c1b.fts"):
+            return None
+
+        # Temporary workaround for the expired NASA server certificate
+        if url.startswith(
+            "https://stereo-ssc.nascom.nasa.gov/"
+        ):
+            kwargs["ssl"] = False
+
+        return super().enqueue_file(
+            url,
+            path=path,
+            filename=filename,
+            overwrite=overwrite,
+            **kwargs,
+        )
+
+
 # -----------------------------------------------------------------------------
 # Download functions
 # -----------------------------------------------------------------------------
@@ -94,12 +126,24 @@ def download_cor1_day(day: datetime) -> list[Path]:
         LOGGER.error("%s: no COR1 files found", date_label)
         return []
 
-    # Do not use a.Sample() here. Sampling could remove one or more images
-    # belonging to a three-image polarization sequence.
+    downloader = COR1Downloader(
+    max_conn=1,
+    max_splits=1,
+    progress=True,
+    overwrite=False,
+    )
+
     downloaded = Fido.fetch(
         query,
         path=str(output_directory / "{file}"),
+        downloader=downloader,
     )
+
+    print(f"Downloaded {len(downloaded)} s4c1b files")
+
+    for error in downloaded.errors:
+        print(f"Failed URL: {error.url}")
+        print(f"Details: {error.exception!r}")
     
     if downloaded.errors:
         print(
