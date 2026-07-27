@@ -85,9 +85,9 @@ def download_cor1_day(day: datetime) -> list[Path]:
 
     query = Fido.search(
         a.Time(start_time, end_time),
-        a.Instrument("SECCHI"),
+        a.Instrument.secchi,
         a.Source(SPACECRAFT),
-        a.Detector("COR1"),
+        a.Detector.cor1,
     )
 
     if len(query) == 0:
