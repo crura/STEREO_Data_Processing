@@ -94,6 +94,11 @@ def download_cor1_day(day: datetime) -> list[Path]:
         LOGGER.error("%s: no COR1 files found", date_label)
         return []
 
+    for x in query[0]:
+        # If not a sequential image, remove from query table
+        if "seq" not in x['fileid']:
+            query[0].remove_row(x.index)
+
     # Do not use a.Sample() here. Sampling could remove one or more images
     # belonging to a three-image polarization sequence.
     downloaded = Fido.fetch(
