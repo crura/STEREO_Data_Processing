@@ -7,25 +7,26 @@ from pathlib import Path
 from parfive import Downloader
 
 from sunpy.net import Fido, attrs as a
+import os
 
 
 # -----------------------------------------------------------------------------
 # User configuration
 # -----------------------------------------------------------------------------
 
-YEAR = 2014
+YEAR = 2013
 SPACECRAFT = "STEREO_B"
 
 DOWNLOAD_ROOT = Path(
-    "/Volumes/Seagate/Chris/2014_Images/B"
+    "/Volumes/Seagate/Chris/2013_Images/B"
 )
 
 PROCESS_LOG = Path(
-    "/Volumes/Seagate/Chris/2014_Images/process_log_2014_B.log"
+    "/Volumes/Seagate/Chris/2013_Images/process_log_2013_B.log"
 )
 
 ERROR_LOG = Path(
-    "/Volumes/Seagate/Chris/2014_Images/process_error_log_2014_B.log"
+    "/Volumes/Seagate/Chris/2013_Images/process_error_log_2013_B.log"
 )
 
 
