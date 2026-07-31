@@ -6,6 +6,42 @@ from secchipy import (
 )
 from secchipy.core.models import ProcessingOptions
 from secchipy.io import write_fits
+import re
+
+def make_pb_filename(component_files: tuple[str, ...]) -> str:
+    """Create the pB output filename from the earliest triplet component."""
+
+    filenames = [Path(filename).name for filename in component_files]
+
+    pattern = re.compile(
+        r"^(?P<timestamp>\d{8}_\d{6})_s4c1(?P<spacecraft>[AB])\.fts$",
+        re.IGNORECASE,
+    )
+
+    parsed_files = []
+
+    for filename in filenames:
+        match = pattern.match(filename)
+
+        if match is None:
+            raise ValueError(
+                f"Unexpected COR1 filename format: {filename}"
+            )
+
+        parsed_files.append(
+            (
+                match.group("timestamp"),
+                match.group("spacecraft").upper(),
+            )
+        )
+
+    # YYYYMMDD_HHMMSS sorts chronologically as a string
+    earliest_timestamp, spacecraft = min(
+        parsed_files,
+        key=lambda item: item[0],
+    )
+
+    return f"{earliest_timestamp}_0P4c1{spacecraft}.fts"
 
 
 def process_cor1_sequence(
@@ -61,24 +97,22 @@ def process_cor1_sequence(
 
     written_files = []
 
-    for index, result in enumerate(results):
-        # Use this for the IDL behavior:
-        # /POLARIZ_ON, /PB
+    for result in results:
         product = result.polarized_brightness
 
-        date_obs = str(
-            product.header.get("DATE-OBS", f"triplet_{index:04d}")
-        )
+        component_files = product.metadata.get("component_files", ())
 
-        safe_date = (
-            date_obs
-            .replace("-", "")
-            .replace(":", "")
-            .replace("T", "_")
-            .replace(".", "_")
-        )
+        if len(component_files) != 3:
+            raise RuntimeError(
+                "Expected exactly three component files, "
+                f"but found {len(component_files)}: {component_files}"
+            )
 
-        output_path = output_directory / f"{safe_date}_cor1_pb.fts"
+        output_name = make_pb_filename(component_files)
+        output_path = output_directory / output_name
+
+        # Keep the FITS header consistent with the actual output filename
+        product.header["FILENAME"] = output_name
 
         write_fits(
             output_path,
