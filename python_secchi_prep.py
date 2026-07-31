@@ -55,7 +55,11 @@ def process_cor1_sequence(
 
     print(f"Output directory: {output_directory}")
 
-    raw_files = sorted(input_directory.glob("*s4c1b.fts"))
+    raw_files = sorted(
+    path
+    for path in input_directory.iterdir()
+    if path.is_file()
+    and path.name.lower().endswith("s4c1b.fts"))
 
     if not raw_files:
         raise FileNotFoundError(
