@@ -1,10 +1,16 @@
 from pathlib import Path
+import os
+import re
+
+import numpy as np
+from astropy.io import fits
 
 from secchipy import (
     cor_polar_prep,
     cor_polar_sequence_prep,
     ensure_secchi_calibration_for_inputs,
 )
+from secchipy.calibrate.shared import get_bkgimg
 from secchipy.core.models import ProcessingOptions
 from secchipy.io import write_fits
 import re
@@ -27,6 +33,20 @@ os.environ["SECCHI_BKG"] = str(SECCHI_BKG)
 
 print(f"SECCHI_BKG={os.environ['SECCHI_BKG']}")
 
+
+def find_cor1_files(input_directory: str | Path) -> list[Path]:
+    """Return the raw COR1 files directly inside one directory."""
+
+    input_directory = Path(input_directory)
+
+    return sorted(
+        path
+        for path in input_directory.iterdir()
+        if path.is_file()
+        and path.name.lower().endswith("s4c1b.fts")
+    )
+
+
 def print_raw_file_order(raw_files: list[Path]) -> None:
     """Print raw inputs chronologically and by polarization angle."""
 
@@ -39,7 +59,9 @@ def print_raw_file_order(raw_files: list[Path]) -> None:
             {
                 "path": path,
                 "date_obs": str(header.get("DATE-OBS", "<missing>")),
-                "polar": float(header.get("POLAR", float("nan"))) % 360.0,
+                "polar": float(
+                    header.get("POLAR", float("nan"))
+                ) % 360.0,
                 "obs_id": header.get("OBS_ID", "<missing>"),
                 "exptime": header.get("EXPTIME", "<missing>"),
                 "crota": header.get("CROTA", "<missing>"),
@@ -62,7 +84,10 @@ def print_raw_file_order(raw_files: list[Path]) -> None:
             f"BIASMEAN={record['biasmean']}"
         )
 
-    ordered = sorted(records, key=lambda record: record["polar"])
+    ordered = sorted(
+        records,
+        key=lambda record: record["polar"],
+    )
 
     print("\nExpected polarization-angle order")
     print("---------------------------------")
@@ -81,7 +106,8 @@ def print_raw_file_order(raw_files: list[Path]) -> None:
 
     if rounded_angles != {0, 120, 240}:
         raise RuntimeError(
-            "The triplet does not contain exactly POLAR=0, 120, and 240. "
+            "The directory does not contain the expected "
+            "POLAR=0, 120, and 240 measurements. "
             f"Found: {sorted(rounded_angles)}"
         )
 
@@ -97,13 +123,18 @@ def print_raw_file_order(raw_files: list[Path]) -> None:
             f"{sorted(obs_ids)}"
         )
 
-def make_pb_filename(component_files: tuple[str, ...]) -> str:
-    """Create the pB output filename from the earliest triplet component."""
 
-    filenames = [Path(filename).name for filename in component_files]
+def make_pb_filename(component_files: tuple[str, ...]) -> str:
+    """Create the pB filename from the earliest triplet component."""
+
+    filenames = [
+        Path(filename).name
+        for filename in component_files
+    ]
 
     pattern = re.compile(
-        r"^(?P<timestamp>\d{8}_\d{6})_s4c1(?P<spacecraft>[AB])\.fts$",
+        r"^(?P<timestamp>\d{8}_\d{6})_s4c1"
+        r"(?P<spacecraft>[AB])\.fts$",
         re.IGNORECASE,
     )
 
@@ -124,35 +155,37 @@ def make_pb_filename(component_files: tuple[str, ...]) -> str:
             )
         )
 
-    # YYYYMMDD_HHMMSS sorts chronologically as a string
     earliest_timestamp, spacecraft = min(
         parsed_files,
         key=lambda item: item[0],
     )
 
-    return f"{earliest_timestamp}_0P4c1{spacecraft}.fts"
+    return (
+        f"{earliest_timestamp}_0P4c1{spacecraft}.fts"
+    )
 
 
 def process_cor1_sequence(
     input_directory: str | Path,
-    ) -> list[Path]:
+) -> list[Path]:
+    """Process all valid COR1 polarization triplets in one directory."""
+
     input_directory = Path(input_directory)
 
-    # Create <day_directory>/processed if it does not already exist
     output_directory = input_directory / "processed"
-    output_directory.mkdir(parents=True, exist_ok=True)
+    output_directory.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
 
+    print(f"\nInput directory: {input_directory}")
     print(f"Output directory: {output_directory}")
 
-    raw_files = sorted(
-    path
-    for path in input_directory.iterdir()
-    if path.is_file()
-    and path.name.lower().endswith("s4c1b.fts"))
+    raw_files = find_cor1_files(input_directory)
 
     if not raw_files:
         raise FileNotFoundError(
-            f"No s4c1b.fts files found in {input_directory}"
+            f"No s4c1B.fts files found in {input_directory}"
         )
 
     print_raw_file_order(raw_files)
@@ -163,9 +196,11 @@ def process_cor1_sequence(
     for raw_file in raw_files:
         raw_header = fits.getheader(raw_file)
 
-        background_data, background_header, background_name = (
-            get_bkgimg(raw_header)
-        )
+        (
+            background_data,
+            _background_header,
+            background_name,
+        ) = get_bkgimg(raw_header)
 
         polar = raw_header.get("POLAR", "<missing>")
 
@@ -182,8 +217,7 @@ def process_cor1_sequence(
                 f"SECCHI_BKG={os.environ.get('SECCHI_BKG')}"
             )
 
-    # Download or locate the calibration assets required by SECCHIpy.
-    calibration_cache, calibration_files = (
+    calibration_cache, _calibration_files = (
         ensure_secchi_calibration_for_inputs(raw_files)
     )
 
@@ -197,41 +231,53 @@ def process_cor1_sequence(
         # Closer to legacy SECCHI_PREP missing-pixel handling
         missing_data_policy="idl",
 
-        # Calibration assets have already been resolved above
+        # Calibration assets were resolved above
         auto_download_calibration=False,
         calibration_cache_dir=calibration_cache,
     )
 
-    # Equivalent to /POLARIZ_ON for a sequence containing multiple triplets.
-    # SECCHIpy selects valid 0/120/240-degree triplets automatically.
     results = cor_polar_sequence_prep(
         raw_files,
-        options=options
+        options=options,
     )
 
     if not results:
         raise RuntimeError(
-            "No valid COR1 polarization triplets were found"
+            "No valid COR1 polarization triplets were found "
+            f"in {input_directory}"
         )
 
     written_files = []
 
-    for result_number, result in enumerate(results, start=1):
+    for result_number, result in enumerate(
+        results,
+        start=1,
+    ):
         product = result.polarized_brightness
 
-        component_files = product.metadata.get("component_files", ())
+        component_files = product.metadata.get(
+            "component_files",
+            (),
+        )
 
         if len(component_files) != 3:
             raise RuntimeError(
                 "Expected exactly three component files, "
-                f"but found {len(component_files)}: {component_files}"
+                f"but found {len(component_files)}: "
+                f"{component_files}"
             )
 
-        print(f"\nSECCHIpy triplet {result_number} combination order")
-        print("------------------------------------------------")
+        print(
+            f"\nSECCHIpy triplet {result_number} "
+            "combination order"
+        )
+        print("--------------------------------------------")
 
         for position, (component, angle) in enumerate(
-            zip(result.components, result.polarization_angles),
+            zip(
+                result.components,
+                result.polarization_angles,
+            ),
             start=1,
         ):
             component_header = component.header
@@ -253,10 +299,15 @@ def process_cor1_sequence(
             )
 
             print(
-                f"   DATE-OBS={component_header.get('DATE-OBS', '<missing>')}, "
-                f"OBS_ID={component_header.get('OBS_ID', '<missing>')}, "
-                f"EXPTIME={component_header.get('EXPTIME', '<missing>')}, "
-                f"CROTA={component_header.get('CROTA', '<missing>')}"
+                "   "
+                f"DATE-OBS="
+                f"{component_header.get('DATE-OBS', '<missing>')}, "
+                f"OBS_ID="
+                f"{component_header.get('OBS_ID', '<missing>')}, "
+                f"EXPTIME="
+                f"{component_header.get('EXPTIME', '<missing>')}, "
+                f"CROTA="
+                f"{component_header.get('CROTA', '<missing>')}"
             )
 
             history = component_header.get("HISTORY", [])
@@ -273,15 +324,20 @@ def process_cor1_sequence(
             ]
 
             print(
-                f"   CALFAC={component_header.get('CALFAC', '<missing>')}"
+                "   CALFAC="
+                f"{component_header.get('CALFAC', '<missing>')}"
             )
 
             if background_entries:
                 print("   Background processing:")
+
                 for entry in background_entries:
                     print(f"      {entry}")
             else:
-                print("   WARNING: no background-subtraction entry in HISTORY")
+                print(
+                    "   WARNING: no background-subtraction "
+                    "entry in HISTORY"
+                )
 
             if finite.size:
                 print(
@@ -304,6 +360,7 @@ def process_cor1_sequence(
         )
 
         written_files.append(output_path)
+
         print(f"Wrote: {output_path}")
 
     return written_files
@@ -340,3 +397,127 @@ print(f"Within relative tolerance:   {report.array.within_rtol}")
 
 print("\nHeader comparison")
 print("-----------------")
+
+def process_cor1_directory_tree(
+    input_root: str | Path,
+    *,
+    continue_on_error: bool = True,
+) -> dict[Path, list[Path]]:
+    """
+    Recursively process every directory containing COR1 raw files.
+
+    Generated directories named 'processed' are excluded from the
+    recursive search.
+    """
+
+    input_root = Path(input_root).expanduser().resolve()
+
+    if not input_root.is_dir():
+        raise NotADirectoryError(
+            f"Input root does not exist: {input_root}"
+        )
+
+    processed_directories: dict[Path, list[Path]] = {}
+    failures: dict[Path, Exception] = {}
+
+    print(f"\nSearching recursively under: {input_root}")
+
+    for current_directory, directory_names, filenames in os.walk(
+        input_root
+    ):
+        # Prevent os.walk from entering output directories.
+        directory_names[:] = sorted(
+            (
+                name
+                for name in directory_names
+                if name.lower() != "processed"
+            ),
+            key=str.lower,
+        )
+
+        current_path = Path(current_directory)
+
+        contains_cor1_files = any(
+            filename.lower().endswith("s4c1b.fts")
+            for filename in filenames
+        )
+
+        if not contains_cor1_files:
+            continue
+
+        print("\n" + "=" * 80)
+        print(f"Processing directory: {current_path}")
+        print("=" * 80)
+
+        try:
+            written_files = process_cor1_sequence(
+                current_path
+            )
+
+            processed_directories[current_path] = (
+                written_files
+            )
+
+        except Exception as error:
+            failures[current_path] = error
+
+            print(
+                f"\nERROR processing {current_path}: "
+                f"{type(error).__name__}: {error}"
+            )
+
+            if not continue_on_error:
+                raise
+
+    if not processed_directories and not failures:
+        raise FileNotFoundError(
+            "No directories containing s4c1B.fts files "
+            f"were found under {input_root}"
+        )
+
+    print("\n" + "=" * 80)
+    print("Processing summary")
+    print("=" * 80)
+
+    total_written = sum(
+        len(paths)
+        for paths in processed_directories.values()
+    )
+
+    print(
+        f"Successful directories: "
+        f"{len(processed_directories)}"
+    )
+    print(f"Failed directories: {len(failures)}")
+    print(f"Total FITS products written: {total_written}")
+
+    for directory, paths in processed_directories.items():
+        print(
+            f"\n{directory}: "
+            f"{len(paths)} product(s)"
+        )
+
+        for path in paths:
+            print(f"  {path}")
+
+    if failures:
+        print("\nFailures")
+        print("--------")
+
+        for directory, error in failures.items():
+            print(
+                f"{directory}: "
+                f"{type(error).__name__}: {error}"
+            )
+
+    return processed_directories
+
+
+# This should be the parent directory containing all of the
+# day/subsequence directories to process.
+INPUT_ROOT = Path("/Volumes/Seagate/Chris/2013_Images")
+
+process_cor1_directory_tree(
+    INPUT_ROOT,
+    continue_on_error=True,
+)
