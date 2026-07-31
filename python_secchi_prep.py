@@ -91,3 +91,6 @@ def process_cor1_sequence(
         print(f"Wrote: {output_path}")
 
     return written_files
+
+
+process_cor1_sequence('/Volumes/Seagate/test/20130101')
