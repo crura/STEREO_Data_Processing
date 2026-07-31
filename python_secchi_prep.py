@@ -176,56 +176,56 @@ def process_cor1_sequence(
 
     written_files = []
 
-    for result in results:
+    for result_number, result in results:
         product = result.polarized_brightness
 
-    component_files = product.metadata.get("component_files", ())
+        component_files = product.metadata.get("component_files", ())
 
-    if len(component_files) != 3:
-        raise RuntimeError(
-            "Expected exactly three component files, "
-            f"but found {len(component_files)}: {component_files}"
-        )
-
-    print(f"\nSECCHIpy triplet {result_number} combination order")
-    print("------------------------------------------------")
-
-    for position, (component, angle) in enumerate(
-        zip(result.components, result.polarization_angles),
-        start=1,
-    ):
-        component_header = component.header
-
-        component_name = str(
-            component_header.get(
-                "FILENAME",
-                component_files[position - 1],
+        if len(component_files) != 3:
+            raise RuntimeError(
+                "Expected exactly three component files, "
+                f"but found {len(component_files)}: {component_files}"
             )
-        )
 
-        data = component.data
-        finite = data[np.isfinite(data)]
+        print(f"\nSECCHIpy triplet {result_number} combination order")
+        print("------------------------------------------------")
 
-        print(
-            f"{position}: "
-            f"POLAR={angle:g} degrees, "
-            f"file={component_name}"
-        )
+        for position, (component, angle) in enumerate(
+            zip(result.components, result.polarization_angles),
+            start=1,
+        ):
+            component_header = component.header
 
-        print(
-            f"   DATE-OBS={component_header.get('DATE-OBS', '<missing>')}, "
-            f"OBS_ID={component_header.get('OBS_ID', '<missing>')}, "
-            f"EXPTIME={component_header.get('EXPTIME', '<missing>')}, "
-            f"CROTA={component_header.get('CROTA', '<missing>')}"
-        )
+            component_name = str(
+                component_header.get(
+                    "FILENAME",
+                    component_files[position - 1],
+                )
+            )
 
-        if finite.size:
+            data = component.data
+            finite = data[np.isfinite(data)]
+
             print(
-                f"   min={np.min(finite):.8g}, "
-                f"max={np.max(finite):.8g}, "
-                f"mean={np.mean(finite):.8g}, "
-                f"std={np.std(finite):.8g}"
+                f"{position}: "
+                f"POLAR={angle:g} degrees, "
+                f"file={component_name}"
             )
+
+            print(
+                f"   DATE-OBS={component_header.get('DATE-OBS', '<missing>')}, "
+                f"OBS_ID={component_header.get('OBS_ID', '<missing>')}, "
+                f"EXPTIME={component_header.get('EXPTIME', '<missing>')}, "
+                f"CROTA={component_header.get('CROTA', '<missing>')}"
+            )
+
+            if finite.size:
+                print(
+                    f"   min={np.min(finite):.8g}, "
+                    f"max={np.max(finite):.8g}, "
+                    f"mean={np.mean(finite):.8g}, "
+                    f"std={np.std(finite):.8g}"
+                )
 
         output_name = make_pb_filename(component_files)
         output_path = output_directory / output_name
