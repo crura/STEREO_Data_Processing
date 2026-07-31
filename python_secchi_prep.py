@@ -188,6 +188,14 @@ def process_cor1_sequence(
     )
 
     options = ProcessingOptions(
+        # Equivalent to /CALIMG_OFF
+        calibration_image=False,
+
+        # Equivalent to /ROTATE_ON
+        rotate_north=True,
+
+        # Closer to legacy SECCHI_PREP missing-pixel handling
+        missing_data_policy="idl",
 
         # Calibration assets have already been resolved above
         auto_download_calibration=False,
