@@ -10,13 +10,15 @@ from secchipy.io import write_fits
 
 def process_cor1_sequence(
     input_directory: str | Path,
-    output_directory: str | Path,
-) -> list[Path]:
+    ) -> list[Path]:
     input_directory = Path(input_directory)
-    output_directory = Path(output_directory)
+
+    # Create <day_directory>/processed if it does not already exist
+    output_directory = input_directory / "processed"
     output_directory.mkdir(parents=True, exist_ok=True)
 
-    # These should be raw sequential polarization files.
+    print(f"Output directory: {output_directory}")
+
     raw_files = sorted(input_directory.glob("*s4c1b.fts"))
 
     if not raw_files:
