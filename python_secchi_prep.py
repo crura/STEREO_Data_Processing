@@ -176,7 +176,7 @@ def process_cor1_sequence(
 
     written_files = []
 
-    for result_number, result in results:
+    for result_number, result in enumerate(results, start=1):
         product = result.polarized_brightness
 
         component_files = product.metadata.get("component_files", ())
