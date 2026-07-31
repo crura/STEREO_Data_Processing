@@ -164,12 +164,11 @@ def process_cor1_sequence(
 
     # Equivalent to /POLARIZ_ON for a sequence containing multiple triplets.
     # SECCHIpy selects valid 0/120/240-degree triplets automatically.
-    result = cor_polar_prep(
+    results = cor_polar_sequence_prep(
         raw_files,
         options=options,
+        max_triplet_span_seconds=90.0,
     )
-
-    results = [result]
 
     if not results:
         raise RuntimeError(
