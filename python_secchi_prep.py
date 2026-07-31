@@ -192,7 +192,7 @@ def process_cor1_sequence(
         calibration_image=False,
 
         # Equivalent to /ROTATE_ON
-        rotate_north=True,
+        rotate_north=False,
 
         # Closer to legacy SECCHI_PREP missing-pixel handling
         missing_data_policy="idl",
