@@ -8,6 +8,78 @@ from secchipy.core.models import ProcessingOptions
 from secchipy.io import write_fits
 import re
 from secchipy.validation import compare_fits_files
+from astropy.io import fits
+import numpy as np
+
+def print_raw_file_order(raw_files: list[Path]) -> None:
+    """Print raw inputs chronologically and by polarization angle."""
+
+    records = []
+
+    for path in raw_files:
+        header = fits.getheader(path)
+
+        records.append(
+            {
+                "path": path,
+                "date_obs": str(header.get("DATE-OBS", "<missing>")),
+                "polar": float(header.get("POLAR", float("nan"))) % 360.0,
+                "obs_id": header.get("OBS_ID", "<missing>"),
+                "exptime": header.get("EXPTIME", "<missing>"),
+                "crota": header.get("CROTA", "<missing>"),
+                "biasmean": header.get("BIASMEAN", "<missing>"),
+            }
+        )
+
+    print("\nRaw files in filename/time order")
+    print("--------------------------------")
+
+    for position, record in enumerate(records, start=1):
+        print(
+            f"{position}: "
+            f"file={record['path'].name}, "
+            f"DATE-OBS={record['date_obs']}, "
+            f"POLAR={record['polar']}, "
+            f"OBS_ID={record['obs_id']}, "
+            f"EXPTIME={record['exptime']}, "
+            f"CROTA={record['crota']}, "
+            f"BIASMEAN={record['biasmean']}"
+        )
+
+    ordered = sorted(records, key=lambda record: record["polar"])
+
+    print("\nExpected polarization-angle order")
+    print("---------------------------------")
+
+    for position, record in enumerate(ordered, start=1):
+        print(
+            f"{position}: "
+            f"POLAR={record['polar']:g} degrees, "
+            f"file={record['path']}"
+        )
+
+    rounded_angles = {
+        round(record["polar"])
+        for record in records
+    }
+
+    if rounded_angles != {0, 120, 240}:
+        raise RuntimeError(
+            "The triplet does not contain exactly POLAR=0, 120, and 240. "
+            f"Found: {sorted(rounded_angles)}"
+        )
+
+    obs_ids = {
+        record["obs_id"]
+        for record in records
+        if record["obs_id"] != "<missing>"
+    }
+
+    if len(obs_ids) > 1:
+        print(
+            "\nWARNING: The files have different OBS_ID values: "
+            f"{sorted(obs_ids)}"
+        )
 
 def make_pb_filename(component_files: tuple[str, ...]) -> str:
     """Create the pB output filename from the earliest triplet component."""
@@ -67,6 +139,8 @@ def process_cor1_sequence(
             f"No s4c1b.fts files found in {input_directory}"
         )
 
+    print_raw_file_order(raw_files)
+
     # Download or locate the calibration assets required by SECCHIpy.
     calibration_cache, calibration_files = (
         ensure_secchi_calibration_for_inputs(raw_files)
@@ -105,18 +179,57 @@ def process_cor1_sequence(
     for result in results:
         product = result.polarized_brightness
 
-        component_files = product.metadata.get("component_files", ())
+    component_files = product.metadata.get("component_files", ())
 
-        if len(component_files) != 3:
-            raise RuntimeError(
-                "Expected exactly three component files, "
-                f"but found {len(component_files)}: {component_files}"
+    if len(component_files) != 3:
+        raise RuntimeError(
+            "Expected exactly three component files, "
+            f"but found {len(component_files)}: {component_files}"
+        )
+
+    print(f"\nSECCHIpy triplet {result_number} combination order")
+    print("------------------------------------------------")
+
+    for position, (component, angle) in enumerate(
+        zip(result.components, result.polarization_angles),
+        start=1,
+    ):
+        component_header = component.header
+
+        component_name = str(
+            component_header.get(
+                "FILENAME",
+                component_files[position - 1],
+            )
+        )
+
+        data = component.data
+        finite = data[np.isfinite(data)]
+
+        print(
+            f"{position}: "
+            f"POLAR={angle:g} degrees, "
+            f"file={component_name}"
+        )
+
+        print(
+            f"   DATE-OBS={component_header.get('DATE-OBS', '<missing>')}, "
+            f"OBS_ID={component_header.get('OBS_ID', '<missing>')}, "
+            f"EXPTIME={component_header.get('EXPTIME', '<missing>')}, "
+            f"CROTA={component_header.get('CROTA', '<missing>')}"
+        )
+
+        if finite.size:
+            print(
+                f"   min={np.min(finite):.8g}, "
+                f"max={np.max(finite):.8g}, "
+                f"mean={np.mean(finite):.8g}, "
+                f"std={np.std(finite):.8g}"
             )
 
         output_name = make_pb_filename(component_files)
         output_path = output_directory / output_name
 
-        # Keep the FITS header consistent with the actual output filename
         product.header["FILENAME"] = output_name
 
         write_fits(
@@ -132,11 +245,11 @@ def process_cor1_sequence(
     return written_files
 
 
-# process_cor1_sequence('/Volumes/Seagate/test/20080101')
+process_cor1_sequence('/Volumes/Seagate/test/20080101Test')
 
 
 python_file = Path(
-    "/Volumes/Seagate/test/20080101/processed/20080101_093500_0P4c1B.fts"
+    "/Volumes/Seagate/test/20080101Test/processed/20080101_093500_0P4c1B.fts"
 )
 
 idl_file = Path(
