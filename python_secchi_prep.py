@@ -260,6 +260,30 @@ def process_cor1_sequence(
                 f"CROTA={component_header.get('CROTA', '<missing>')}"
             )
 
+            history = component_header.get("HISTORY", [])
+
+            if isinstance(history, str):
+                history = [history]
+            else:
+                history = list(history)
+
+            background_entries = [
+                str(entry)
+                for entry in history
+                if "background" in str(entry).lower()
+            ]
+
+            print(
+                f"   CALFAC={component_header.get('CALFAC', '<missing>')}"
+            )
+
+            if background_entries:
+                print("   Background processing:")
+                for entry in background_entries:
+                    print(f"      {entry}")
+            else:
+                print("   WARNING: no background-subtraction entry in HISTORY")
+
             if finite.size:
                 print(
                     f"   min={np.min(finite):.8g}, "
