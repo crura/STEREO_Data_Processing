@@ -127,4 +127,4 @@ def process_cor1_sequence(
     return written_files
 
 
-process_cor1_sequence('/Volumes/Seagate/test/20130101')
+process_cor1_sequence('/Volumes/Seagate/test/20080101')
