@@ -11,6 +11,21 @@ import re
 from secchipy.validation import compare_fits_files
 from astropy.io import fits
 import numpy as np
+import os
+from secchipy.calibrate.shared import get_bkgimg
+
+SECCHI_BKG = Path(
+    "/Users/crura/stereo/secchi/backgrounds"
+).expanduser()
+
+if not SECCHI_BKG.is_dir():
+    raise NotADirectoryError(
+        f"SECCHI background directory does not exist: {SECCHI_BKG}"
+    )
+
+os.environ["SECCHI_BKG"] = str(SECCHI_BKG)
+
+print(f"SECCHI_BKG={os.environ['SECCHI_BKG']}")
 
 def print_raw_file_order(raw_files: list[Path]) -> None:
     """Print raw inputs chronologically and by polarization angle."""
@@ -141,6 +156,31 @@ def process_cor1_sequence(
         )
 
     print_raw_file_order(raw_files)
+
+    print("\nBackground-image selection")
+    print("--------------------------")
+
+    for raw_file in raw_files:
+        raw_header = fits.getheader(raw_file)
+
+        background_data, background_header, background_name = (
+            get_bkgimg(raw_header)
+        )
+
+        polar = raw_header.get("POLAR", "<missing>")
+
+        print(
+            f"POLAR={polar}: "
+            f"input={raw_file.name}, "
+            f"background={background_name or '<not found>'}"
+        )
+
+        if background_data is None:
+            raise RuntimeError(
+                "No COR1 background was found for "
+                f"{raw_file.name} with POLAR={polar}. "
+                f"SECCHI_BKG={os.environ.get('SECCHI_BKG')}"
+            )
 
     # Download or locate the calibration assets required by SECCHIpy.
     calibration_cache, calibration_files = (
