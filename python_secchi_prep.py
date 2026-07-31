@@ -206,8 +206,7 @@ def process_cor1_sequence(
     # SECCHIpy selects valid 0/120/240-degree triplets automatically.
     results = cor_polar_sequence_prep(
         raw_files,
-        options=options,
-        max_triplet_span_seconds=90.0,
+        options=options
     )
 
     if not results:
