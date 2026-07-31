@@ -7,6 +7,7 @@ from secchipy import (
 from secchipy.core.models import ProcessingOptions
 from secchipy.io import write_fits
 import re
+from secchipy.validation import compare_fits_files
 
 def make_pb_filename(component_files: tuple[str, ...]) -> str:
     """Create the pB output filename from the earliest triplet component."""
@@ -131,4 +132,34 @@ def process_cor1_sequence(
     return written_files
 
 
-process_cor1_sequence('/Volumes/Seagate/test/20080101')
+# process_cor1_sequence('/Volumes/Seagate/test/20080101')
+
+
+python_file = Path(
+    "/Volumes/Seagate/test/20080101/processed/20080101_093500_0P4c1B.fts"
+)
+
+idl_file = Path(
+    "/Volumes/Seagate/test/20080101_IDL/processed/20080101_093500_0P4c1B.fts"
+)
+
+report = compare_fits_files(
+    python_file,
+    idl_file,
+    atol=1e-6,
+    rtol=1e-6,
+)
+
+print("Image comparison")
+print("----------------")
+print(f"Maximum absolute difference: {report.array.max_abs_diff}")
+print(f"Mean absolute difference:    {report.array.mean_abs_diff}")
+print(f"99th percentile difference:  {report.array.p99_abs_diff}")
+print(f"RMSE:                        {report.array.rmse}")
+print(f"Percent RMSE:                {report.array.percent_rmse}")
+print(f"Finite-pixel overlap:        {report.array.finite_overlap}")
+print(f"Within absolute tolerance:   {report.array.within_atol}")
+print(f"Within relative tolerance:   {report.array.within_rtol}")
+
+print("\nHeader comparison")
+print("-----------------")
