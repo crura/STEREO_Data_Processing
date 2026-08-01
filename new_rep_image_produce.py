@@ -36,7 +36,7 @@ COMBINE_METHODS = ("mean", "median")
 # A copy is written beside each day's input directory and another consolidated
 # copy is written under A/Representative_Images or B/Representative_Images.
 CUSTOM_OUTPUT_ROOT = Path(
-    "/Users/crura/Desktop/Research/2026_Summer_Project/Representative_Images"
+    "/Users/crura/Desktop/Research/2026_Summer_Project/2014_Rep_Images"
 )
 
 WRITE_DAY_DIRECTORY_COPY = False
