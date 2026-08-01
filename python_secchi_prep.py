@@ -515,7 +515,7 @@ def process_cor1_directory_tree(
 
 # This should be the parent directory containing all of the
 # day/subsequence directories to process.
-INPUT_ROOT = Path("/Volumes/Seagate/Chris/2013_Images")
+INPUT_ROOT = Path("/Volumes/Seagate/Chris/2014_Images")
 
 process_cor1_directory_tree(
     INPUT_ROOT,
