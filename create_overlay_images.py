@@ -1,5 +1,12 @@
 from pathlib import Path
 import os
+
+import matplotlib.pyplot as plt
+import numpy as np
+from astropy.io import fits
+from matplotlib.collections import LineCollection
+from matplotlib.colors import Normalize
+from PIL import Image
 image_directory = Path("/Users/crura/Desktop/Research/2026_Summer_Project/Representative_Images/B/4_per_day")
 constraint_directory = Path("/Users/crura/Desktop/Research/2026_Summer_Project/2008_QRaFT_Features/FITS")
 output_path = "/Users/crura/Desktop/Research/2026_Summer_Project/Representative_Images/B/overlayed_4_per_day"
