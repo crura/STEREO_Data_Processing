@@ -68,4 +68,30 @@ def produce_overlay_images(imagefiles, qraftfiles):
         plt.savefig(os.path.join(output_path, image_file.stem + "_qraft_overlayed.png"))
         plt.close
 
-produce_overlay_images(imagefiles, qraftfiles)
+# produce_overlay_images(imagefiles, qraftfiles)
+
+png_files = find_files_from_suffix("/Users/crura/Desktop/Research/2026_Summer_Project/Representative_Images/B/overlayed_4_per_day", ".png")
+
+GIF_FILE = output_path + "qraft_orientations.gif"
+
+# Combine the PNG files into an animated GIF.
+frames = [
+    Image.open(path).convert("RGB")
+    for path in png_files
+]
+
+frames[0].save(
+    GIF_FILE,
+    save_all=True,
+    append_images=frames[1:],
+    duration=FRAME_DURATION_MS,
+    loop=0,
+)
+
+for frame in frames:
+    frame.close()
+
+
+print(f"Saved {len(png_files)} PNG frames")
+print(f"Saved GIF: {GIF_FILE}")
+# for i in range(len(png_files)-1):
