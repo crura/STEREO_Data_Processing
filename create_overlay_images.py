@@ -9,21 +9,8 @@ VALID_FILE_SUFFIXES = (
 )
 qraft_suffix = ".sav.fits"
 
-
-def find_image_files(input_directory: str | Path) -> list[Path]:
-    """Return the raw COR1 files directly inside one directory."""
-
-    input_directory = Path(input_directory)
-
-    return sorted(
-        path
-        for path in input_directory.iterdir()
-        if path.is_file()
-        and path.name.lower().endswith("median.fts")
-    )
-
-def find_qraft_files(input_directory: str | Path) -> list[Path]:
-    """Return the raw COR1 files directly inside one directory."""
+def find_files_from_suffix(input_directory: str | Path, suffix: str) -> list[Path]:
+    """Return files directly inside one directory based on suffix."""
 
     input_directory = Path(input_directory)
 
@@ -31,51 +18,54 @@ def find_qraft_files(input_directory: str | Path) -> list[Path]:
         path
         for path in input_directory.iterdir()
         if path.is_file()
-        and path.name.lower().endswith(".fits")
+        and path.name.lower().endswith(suffix)
     )
 
-imagefiles = find_image_files(image_directory)
-qraftfiles = find_qraft_files(constraint_directory)
+imagefiles = find_files_from_suffix(image_directory, "median.fts")
+qraftfiles = find_files_from_suffix(constraint_directory, ".fits")
 
-for i in range(len(imagefiles)-1):
-    image_file = imagefiles[i]
-    constraint_file = qraftfiles[i]
-    image = fits.getdata(image_file).astype(float)
-    angles = fits.getdata(constraint_file).astype(float)
+def produce_overlay_images(imagefiles, qraftfiles):
+    for i in range(len(imagefiles)-1):
+        image_file = imagefiles[i]
+        constraint_file = qraftfiles[i]
+        image = fits.getdata(image_file).astype(float)
+        angles = fits.getdata(constraint_file).astype(float)
 
-    valid = np.isfinite(angles) & (angles != 0)
-    angle_overlay = np.where(valid, np.mod(angles, 2 * np.pi), np.nan)
-    
-    positive = image[np.isfinite(image) & (image > 0)]
-    vmin, vmax = np.percentile(positive, [1, 99.9])
-    
-    fig, ax = plt.subplots(figsize=(9, 9))
-    
-    ax.imshow(
-        image,
-        origin="lower",
-        cmap="gray",
-        norm=LogNorm(vmin=vmin, vmax=vmax),
-    )
-    
-    overlay = ax.imshow(
-        angle_overlay,
-        origin="lower",
-        cmap="twilight",
-        vmin=0,
-        vmax=2 * np.pi,
-    )
-    
-    fig.colorbar(
-        overlay,
-        ax=ax,
-        label="QRaFT orientation angle (radians)",
-    )
-    
-    ax.set_xlabel("X (pixel)")
-    ax.set_ylabel("Y (pixel)")
-    ax.set_title("COR1 image with QRaFT constraints")
-    
-    fig.tight_layout()
-    plt.savefig(os.path.join(output_path, image_file.stem + "_qraft_overlayed.png"))
-    plt.close
+        valid = np.isfinite(angles) & (angles != 0)
+        angle_overlay = np.where(valid, np.mod(angles, 2 * np.pi), np.nan)
+        
+        positive = image[np.isfinite(image) & (image > 0)]
+        vmin, vmax = np.percentile(positive, [1, 99.9])
+        
+        fig, ax = plt.subplots(figsize=(9, 9))
+        
+        ax.imshow(
+            image,
+            origin="lower",
+            cmap="gray",
+            norm=LogNorm(vmin=vmin, vmax=vmax),
+        )
+        
+        overlay = ax.imshow(
+            angle_overlay,
+            origin="lower",
+            cmap="twilight",
+            vmin=0,
+            vmax=2 * np.pi,
+        )
+        
+        fig.colorbar(
+            overlay,
+            ax=ax,
+            label="QRaFT orientation angle (radians)",
+        )
+        
+        ax.set_xlabel("X (pixel)")
+        ax.set_ylabel("Y (pixel)")
+        ax.set_title("COR1 image with QRaFT constraints")
+        
+        fig.tight_layout()
+        plt.savefig(os.path.join(output_path, image_file.stem + "_qraft_overlayed.png"))
+        plt.close
+
+produce_overlay_images(imagefiles, qraftfiles)
