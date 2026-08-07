@@ -80,6 +80,7 @@ def produce_overlay_images(imagefiles, qraftfiles):
 png_files = find_files_from_suffix("/Users/crura/Desktop/Research/2026_Summer_Project/Representative_Images/B/overlayed_4_per_day", ".png")
 
 GIF_FILE = output_path + "qraft_orientations.gif"
+FRAME_DURATION_MS = 150
 
 # Combine the PNG files into an animated GIF.
 frames = [
