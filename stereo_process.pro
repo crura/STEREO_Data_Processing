@@ -86,105 +86,106 @@ function stereo_process, directory
 
     IF nfiles LT 3 THEN BEGIN
       PRINT, 'Not enough files for a polarization sequence.'
-
-    ENDIF
-
-
-    ;------------------------------------------------------
-    ; Read metadata from FITS headers
-    ;------------------------------------------------------
-
-    date_obs = STRARR(nfiles)
-    polar    = DBLARR(nfiles)
-    obs_id   = LONARR(nfiles)
-
-    FOR i = 0L, nfiles-1 DO BEGIN
-
-        hdr = HEADFITS(filelist[i], /SILENT)
-
-        date_obs[i] = FXPAR(hdr, 'DATE-OBS')
-        polar[i]    = FXPAR(hdr, 'POLAR')
-        obs_id[i]   = FXPAR(hdr, 'OBS_ID')
-
-    ENDFOR
+    ENDIF ELSE BEGIN
+    
 
 
-    ;------------------------------------------------------
-    ; Sort files chronologically using DATE-OBS
-    ;------------------------------------------------------
+        ;------------------------------------------------------
+        ; Read metadata from FITS headers
+        ;------------------------------------------------------
 
-    tai = ANYTIM2TAI(date_obs)
+        date_obs = STRARR(nfiles)
+        polar    = DBLARR(nfiles)
+        obs_id   = LONARR(nfiles)
 
-    order = SORT(tai)
+        FOR i = 0L, nfiles-1 DO BEGIN
 
-    filelist = filelist[order]
-    date_obs = date_obs[order]
-    polar    = polar[order]
-    obs_id   = obs_id[order]
-    tai      = tai[order]
+            hdr = HEADFITS(filelist[i], /SILENT)
 
+            date_obs[i] = FXPAR(hdr, 'DATE-OBS')
+            polar[i]    = FXPAR(hdr, 'POLAR')
+            obs_id[i]   = FXPAR(hdr, 'OBS_ID')
 
-    ;------------------------------------------------------
-    ; Look for valid 0,120,240 polarization sequences
-    ;------------------------------------------------------
-
-    k = 0L
-    success_condition = 0
-
-    WHILE k LE nfiles-3 DO BEGIN
-
-        pols = polar[k:k+2]
-
-        sorted_pols = pols[SORT(pols)]
-
-        p0 = sorted_pols[0]
-        p1 = sorted_pols[1]
-        p2 = sorted_pols[2]
-
-        ; Time relative to first image
-        dt1 = tai[k+1] - tai[k]
-        dt2 = tai[k+2] - tai[k]
-
-        ; Standard COR1 sequence
-        valid_angles = $
-            (ABS(p0 -   0.0D) LT 0.1D) AND $
-            (ABS(p1 - 120.0D) LT 0.1D) AND $
-            (ABS(p2 - 240.0D) LT 0.1D)
-
-        ; Same timing criteria used by COR1_PBSERIES
-        valid_time = $
-            (dt1 LE 60.0D) AND $
-            (dt2 LT 120.0D)
+        ENDFOR
 
 
-        IF valid_angles AND valid_time THEN BEGIN
+        ;------------------------------------------------------
+        ; Sort files chronologically using DATE-OBS
+        ;------------------------------------------------------
 
-            file = filelist[k:k+2]
+        tai = ANYTIM2TAI(date_obs)
 
-            PRINT, 'Found polarization sequence:'
-            PRINT, file
-            PRINT, 'POLAR = ', polar[k:k+2]
-            PRINT, 'OBS_ID = ', obs_id[k:k+2]
+        order = SORT(tai)
 
-            secchi_prep, file, headd, imd, $
-                /CALIMG_OFF, $
-                /NOCALFAC, $
-                /ROTATE_ON, $
-                /WRITE_FTS, $
-                SAVEPATH=spath, $
-                /POLARIZ_ON, $
-                /pB
+        filelist = filelist[order]
+        date_obs = date_obs[order]
+        polar    = polar[order]
+        obs_id   = obs_id[order]
+        tai      = tai[order]
 
-            k = k + 3
-            success_condition = 1
 
-        ENDIF ELSE BEGIN
+        ;------------------------------------------------------
+        ; Look for valid 0,120,240 polarization sequences
+        ;------------------------------------------------------
 
-            k = k + 1
+        k = 0L
+        success_condition = 0
 
-        ENDELSE
+        WHILE k LE nfiles-3 DO BEGIN
 
-    ENDWHILE
+            pols = polar[k:k+2]
+
+            sorted_pols = pols[SORT(pols)]
+
+            p0 = sorted_pols[0]
+            p1 = sorted_pols[1]
+            p2 = sorted_pols[2]
+
+            ; Time relative to first image
+            dt1 = tai[k+1] - tai[k]
+            dt2 = tai[k+2] - tai[k]
+
+            ; Standard COR1 sequence
+            valid_angles = $
+                (ABS(p0 -   0.0D) LT 0.1D) AND $
+                (ABS(p1 - 120.0D) LT 0.1D) AND $
+                (ABS(p2 - 240.0D) LT 0.1D)
+
+            ; Same timing criteria used by COR1_PBSERIES
+            valid_time = $
+                (dt1 LE 60.0D) AND $
+                (dt2 LT 120.0D)
+
+
+            IF valid_angles AND valid_time THEN BEGIN
+
+                file = filelist[k:k+2]
+
+                PRINT, 'Found polarization sequence:'
+                PRINT, file
+                PRINT, 'POLAR = ', polar[k:k+2]
+                PRINT, 'OBS_ID = ', obs_id[k:k+2]
+
+                secchi_prep, file, headd, imd, $
+                    /CALIMG_OFF, $
+                    /NOCALFAC, $
+                    /ROTATE_ON, $
+                    /WRITE_FTS, $
+                    SAVEPATH=spath, $
+                    /POLARIZ_ON, $
+                    /pB
+
+                k = k + 3
+                success_condition = 1
+
+            ENDIF ELSE BEGIN
+
+                k = k + 1
+
+            ENDELSE
+
+        ENDWHILE
+    ENDELSE
 
 
 
