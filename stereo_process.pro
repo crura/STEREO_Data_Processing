@@ -86,6 +86,7 @@ function stereo_process, directory
 
     IF nfiles LT 3 THEN BEGIN
       PRINT, 'Not enough files for a polarization sequence.'
+
     ENDIF
 
 
@@ -132,7 +133,9 @@ function stereo_process, directory
 
     WHILE k LE nfiles-3 DO BEGIN
 
-        sorted_pols = polar[SORT(polar)]
+        pols = polar[k:k+2]
+
+        sorted_pols = pols[SORT(pols)]
 
         p0 = sorted_pols[k]
         p1 = sorted_pols[k+1]
