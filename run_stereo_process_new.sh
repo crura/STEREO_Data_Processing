@@ -19,6 +19,7 @@ echo ".compile -v '/Users/crura/SSW/gen/idl/string/strjustify.pro'" &&
 echo ".compile -v '/Users/crura/SSW/gen/idl/system/strrep_logenv.pro'" &&
 echo ".compile -v '/Users/crura/SSW/gen/idl/string/prstr.pro'" &&
 echo ".compile -v '/Users/crura/SSW/gen/idl/genutil/uniqo.pro'" &&
+echo ".compile -v '/Users/crura/Desktop/Research/2026_Summer_Project/STEREO_Data_Processing/IDL_Utilites/concat_dir.pro'" &&
 echo "ssw_path, '/Users/crura/SSW/gen'" &&
 echo "ssw_path, '/Users/crura/SSW/hinode'" &&
 echo "ssw_path, '/Users/crura/SSW/offline'" &&
