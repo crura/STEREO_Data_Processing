@@ -9,7 +9,7 @@ git_repo=$(git rev-parse --show-toplevel) &&
 # source $SSW/gen/setup/setup.ssw \loud
 export IDL_DIR="/Applications/harris/idl89" &&
 export secchi="/Volumes/Seagate/Chris/sswdb/secchi" &&
-export SECCHI_BKG="/Users/crura/stereo/secchi/backgrounds" &&
+export SECCHI_BKG="/Volumes/Seagate/Chris/sswdb/secchi/backgrounds" &&
 export SSWDB="/Volumes/Seagate/Chris/sswdb" &&
 export sdb="/Volumes/Seagate/Chris/sswdb" &&
 export VSO_SERVER="http://netdrms02.nispdc.nso.edu/cgi/vsoi_tabdelim" &&
