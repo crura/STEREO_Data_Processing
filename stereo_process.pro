@@ -86,7 +86,6 @@ function stereo_process, directory
 
     IF nfiles LT 3 THEN BEGIN
       PRINT, 'Not enough files for a polarization sequence.'
-      RETURN
     ENDIF
 
 
