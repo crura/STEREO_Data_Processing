@@ -132,9 +132,11 @@ function stereo_process, directory
 
     WHILE k LE nfiles-3 DO BEGIN
 
-        p0 = polar[k]
-        p1 = polar[k+1]
-        p2 = polar[k+2]
+        sorted_pols = polar[SORT(polar)]
+
+        p0 = sorted_pols[k]
+        p1 = sorted_pols[k+1]
+        p2 = sorted_pols[k+2]
 
         ; Time relative to first image
         dt1 = tai[k+1] - tai[k]
