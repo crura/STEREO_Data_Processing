@@ -30,7 +30,7 @@ echo "ssw_path, '/Users/crura/SSW/so'" &&
 echo "ssw_path, '/Users/crura/SSW/soho'" &&
 echo "ssw_path, '/Users/crura/SSW/stereo'" &&
 echo "ssw_path, '/Users/crura/SSW/trace'" &&
-echo "ssw_path, '//Users/crura/SSW/vobs'" &&
+echo "ssw_path, '/Users/crura/SSW/vobs'" &&
 echo "ssw_path, '/Users/crura/SSW/packages'" &&
 echo ".compile -v '/Users/crura/Desktop/Research/idlroutines/download.pro'" &&
 echo ".compile -v '/Users/crura/SSW/packages/forward/idl/DEFAULTS/for_settingdefaults.pro'" &&
