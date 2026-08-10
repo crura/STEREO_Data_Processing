@@ -36,7 +36,7 @@ echo ".compile -v '/Users/crura/Desktop/Research/idlroutines/download.pro'" &&
 echo ".compile -v '/Users/crura/SSW/packages/forward/idl/DEFAULTS/for_settingdefaults.pro'" &&
 echo ".compile -v '/Users/crura/SSW/gen/idl/util/default.pro'" &&
 echo ".compile -v '/Users/crura/IDLWorkspace/Default/linspace.pro'" &&
-echo ".compile -v '$git_repo/stereo_process_new.pro'" &&
+echo ".compile -v '$git_repo/stereo_process.pro'" &&
 
 # from https://gist.github.com/pkuczynski/8665367
 parse_yaml() {
@@ -64,7 +64,7 @@ parent_directory="$config_input_path/A" &&
 # Loop through subdirectories
 for dir in "$parent_directory"/*/; do
     # Call the custom function for each subdirectory
-    echo "stereo_process_new('$dir')"
+    echo "stereo_process('$dir')"
 done
 
 # Specify the parent directory to loop through its subdirectories
@@ -73,7 +73,7 @@ parent_directory="$config_input_path/B" &&
 # Loop through subdirectories
 for dir in "$parent_directory"/*/; do
     # Call the custom function for each subdirectory
-    echo "stereo_process_new('$dir')"
+    echo "stereo_process('$dir')"
 done
 cat) |
 /Users/crura/Documents/bin/ssw
