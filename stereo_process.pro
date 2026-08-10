@@ -137,9 +137,9 @@ function stereo_process, directory
 
         sorted_pols = pols[SORT(pols)]
 
-        p0 = sorted_pols[k]
-        p1 = sorted_pols[k+1]
-        p2 = sorted_pols[k+2]
+        p0 = sorted_pols[0]
+        p1 = sorted_pols[1]
+        p2 = sorted_pols[2]
 
         ; Time relative to first image
         dt1 = tai[k+1] - tai[k]
