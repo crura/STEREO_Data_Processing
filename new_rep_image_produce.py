@@ -33,12 +33,6 @@ SUBSTACKS_TO_PROCESS: tuple[int, ...] | None = None
 # to create exactly four output FITS files per day.
 COMBINE_METHODS = ("mean", "median")
 
-# A copy is written beside each day's input directory and another consolidated
-# copy is written under A/Representative_Images or B/Representative_Images.
-CUSTOM_OUTPUT_ROOT = Path(
-    "/Volumes/Seagate/Chris/2013_Test/2013_Rep_Images"
-)
-
 WRITE_DAY_DIRECTORY_COPY = False
 WRITE_CONSOLIDATED_COPY = False
 
@@ -65,6 +59,13 @@ with (REPO_PATH / "config.yaml").open("r", encoding="utf-8") as stream:
     yaml_parse = yaml.safe_load(stream)
 
 INPUT_PATH = Path(yaml_parse["input_path"])
+
+# A copy is written beside each day's input directory and another consolidated
+# copy is written under A/Representative_Images or B/Representative_Images.
+CUSTOM_OUTPUT_ROOT = INPUT_PATH / 'Rep_Images'
+
+# Create directory if it doesn't exist
+CUSTOM_OUTPUT_ROOT.mkdir(parents=True, exist_ok=True)
 
 logging.basicConfig(
     level=logging.INFO,
