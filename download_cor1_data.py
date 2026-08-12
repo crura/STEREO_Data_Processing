@@ -9,25 +9,29 @@ from parfive import Downloader
 from sunpy.net import Fido, attrs as a
 import os
 
+import yaml
+
+# Open and parse the YAML file
+with open("/Users/crura/Desktop/Research/2026_Summer_Project/STEREO_Data_Processing/config.yaml", "r") as file:
+    try:
+        input_data = yaml.safe_load(file)
+    except yaml.YAMLError as error:
+        print(f"Error parsing YAML: {error}")
+
 
 # -----------------------------------------------------------------------------
 # User configuration
 # -----------------------------------------------------------------------------
+A_OR_B = str(input_data['a_or_b'])
+YEAR = input_data['input_year']
+SPACECRAFT = "STEREO_" + A_OR_B
+INPUT_PATH = Path(input_data['input_path'])
 
-YEAR = 2012
-SPACECRAFT = "STEREO_B"
+DOWNLOAD_ROOT = INPUT_PATH / A_OR_B
+PROCESS_LOG = INPUT_PATH / "process_log_" + str(YEAR) + "_" + A_OR_B + ".log"
 
-DOWNLOAD_ROOT = Path(
-    "/Volumes/Seagate/Chris/2012_Images/B"
-)
 
-PROCESS_LOG = Path(
-    "/Volumes/Seagate/Chris/2012_Images/process_log_2012_B.log"
-)
-
-ERROR_LOG = Path(
-    "/Volumes/Seagate/Chris/2012_Images/process_error_log_2012_B.log"
-)
+ERROR_LOG = INPUT_PATH / "process_error_log_" + str(YEAR) + "_" + A_OR_B + ".log"
 
 
 # -----------------------------------------------------------------------------
@@ -56,7 +60,7 @@ LOGGER.addHandler(error_handler)
 
 
 class COR1Downloader(Downloader):
-    """Download only STEREO-B sequential COR1 files."""
+    """Download only STEREO sequential COR1 files."""
 
     def enqueue_file(
         self,
@@ -66,8 +70,9 @@ class COR1Downloader(Downloader):
         overwrite=None,
         **kwargs,
     ):
-        # Do not download n4c1B or any other unwanted files
-        if not url.lower().endswith("s4c1b.fts"):
+        # Do not download n4c1B(A) or any other unwanted files
+        end_tag = "s4c1" + A_OR_B.lower() + ".fts"
+        if not url.lower().endswith(end_tag):
             return None
 
         # Temporary workaround for the expired NASA server certificate
@@ -90,7 +95,7 @@ class COR1Downloader(Downloader):
 # -----------------------------------------------------------------------------
 
 def download_cor1_day(day: datetime) -> list[Path]:
-    """Download STEREO-B SECCHI/COR1 files for one daily time interval."""
+    """Download STEREO SECCHI/COR1 files for one daily time interval."""
 
     date_label = day.strftime("%Y%m%d")
 
@@ -139,8 +144,8 @@ def download_cor1_day(day: datetime) -> list[Path]:
         path=str(output_directory / "{file}"),
         downloader=downloader,
     )
-
-    print(f"Downloaded {len(downloaded)} s4c1b files")
+    tag = "s4c1" + A_OR_B.lower()
+    print(f"Downloaded {len(downloaded)} ${tag} files")
 
     for error in downloaded.errors:
         print(f"Failed URL: {error.url}")
@@ -196,7 +201,8 @@ def download_cor1_day(day: datetime) -> list[Path]:
         if not os.path.isfile(file_path):
             continue
 
-        if not filename.lower().endswith("s4c1b.fts"):
+        end_tag = "s4c1" + A_OR_B.lower() + ".fts"
+        if not filename.lower().endswith(end_tag):
             os.remove(file_path)
             print(f"Deleted: {file_path}")
 
