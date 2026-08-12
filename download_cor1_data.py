@@ -14,19 +14,19 @@ import os
 # User configuration
 # -----------------------------------------------------------------------------
 
-YEAR = 2010
+YEAR = 2012
 SPACECRAFT = "STEREO_B"
 
 DOWNLOAD_ROOT = Path(
-    "/Volumes/Seagate/Chris/2010_Images/B"
+    "/Volumes/Seagate/Chris/2012_Images/B"
 )
 
 PROCESS_LOG = Path(
-    "/Volumes/Seagate/Chris/2010_Images/process_log_2010_B.log"
+    "/Volumes/Seagate/Chris/2012_Images/process_log_2012_B.log"
 )
 
 ERROR_LOG = Path(
-    "/Volumes/Seagate/Chris/2010_Images/process_error_log_2010_B.log"
+    "/Volumes/Seagate/Chris/2012_Images/process_error_log_2012_B.log"
 )
 
 
