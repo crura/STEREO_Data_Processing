@@ -11,7 +11,7 @@ a_or_b: "B"
 # end_day: 15
 
 start_time: "09:35:00"
-end_time: "17:45:25"
+end_time: "18:35:25"
 
 specific_dates: 
   - "2017-08-20"

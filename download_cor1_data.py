@@ -26,6 +26,8 @@ A_OR_B = str(input_data['a_or_b'])
 YEAR = input_data['input_year']
 SPACECRAFT = "STEREO_" + A_OR_B
 INPUT_PATH = Path(input_data['input_path'])
+START_TIME = str(input_data['start_time'])
+END_TIME = str(input_data['end_time'])
 
 DOWNLOAD_ROOT = INPUT_PATH / A_OR_B
 PROCESS_LOG = INPUT_PATH / "process_log_" + str(YEAR) + "_" + A_OR_B + ".log"
@@ -98,17 +100,20 @@ def download_cor1_day(day: datetime) -> list[Path]:
     """Download STEREO SECCHI/COR1 files for one daily time interval."""
 
     date_label = day.strftime("%Y%m%d")
+    # convert input hour, minute, seconds into ints
+    hour_start, min_start, sec_start = [int(x) for x in START_TIME.split(':')]
+    hour_end, min_end, sec_end = [int(x) for x in END_TIME.split(':')]
 
     start_time = day.replace(
-        hour=9,
-        minute=35,
-        second=0,
+        hour=hour_start,
+        minute=min_start,
+        second=sec_start,
     )
 
     end_time = day.replace(
-        hour=18,
-        minute=35,
-        second=25,
+        hour=hour_end,
+        minute=min_end,
+        second=sec_end,
     )
 
     output_directory = DOWNLOAD_ROOT / date_label
