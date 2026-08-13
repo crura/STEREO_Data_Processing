@@ -30,10 +30,11 @@ START_TIME = str(input_data['start_time'])
 END_TIME = str(input_data['end_time'])
 
 DOWNLOAD_ROOT = INPUT_PATH / A_OR_B
-PROCESS_LOG = INPUT_PATH / "process_log_" + str(YEAR) + "_" + A_OR_B + ".log"
+string_process_log = "process_log_" + str(YEAR) + "_" + A_OR_B + ".log"
+PROCESS_LOG = INPUT_PATH / string_process_log
 
-
-ERROR_LOG = INPUT_PATH / "process_error_log_" + str(YEAR) + "_" + A_OR_B + ".log"
+string_error_log = "process_error_log_" + str(YEAR) + "_" + A_OR_B + ".log"
+ERROR_LOG = INPUT_PATH / string_error_log
 
 
 # -----------------------------------------------------------------------------
