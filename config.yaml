@@ -1,5 +1,5 @@
-input_path: /Volumes/Seagate/Chris/2012_Images
-input_year: 2012
+input_path: /Volumes/Seagate/Chris/2009_Images
+input_year: 2009
 a_or_b: "B"
 
 # start_year: 2017
@@ -12,7 +12,7 @@ a_or_b: "B"
 
 start_time: "09:35:00"
 end_time: "18:35:25"
-
+200
 specific_dates: 
   - "2017-08-20"
   - "2017-08-25"
