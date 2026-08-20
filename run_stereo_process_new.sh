@@ -1,12 +1,15 @@
-source /Users/crura/miniconda3/etc/profile.d/conda.sh &&
+source ~/miniconda3/etc/profile.d/conda.sh &&
 conda init bash &&
 conda activate test_env &&
 python3 -m venv env &&
 source env/bin/activate &&
 pip install -r requirements.txt &&
 git_repo=$(git rev-parse --show-toplevel) &&
+sswPath='~/SSW' &&
 # export SSW /Users/crura/SSW
 # source $SSW/gen/setup/setup.ssw \loud
+
+# User sets these paths
 export IDL_DIR="/Applications/harris/idl89" &&
 export secchi="/Volumes/Seagate/Chris/sswdb/secchi" &&
 export SECCHI_BKG="/Volumes/Seagate/Chris/sswdb/secchi/backgrounds" &&
@@ -15,27 +18,27 @@ export sdb="/Volumes/Seagate/Chris/sswdb" &&
 export VSO_SERVER="http://netdrms02.nispdc.nso.edu/cgi/vsoi_tabdelim" &&
 
 (echo "ssw_path" &&
-echo ".compile -v '/Users/crura/SSW/gen/idl/string/strjustify.pro'" &&
-echo ".compile -v '/Users/crura/SSW/gen/idl/system/strrep_logenv.pro'" &&
-echo ".compile -v '/Users/crura/SSW/gen/idl/string/prstr.pro'" &&
-echo ".compile -v '/Users/crura/SSW/gen/idl/genutil/uniqo.pro'" &&
-echo ".compile -v '/Users/crura/Desktop/Research/2026_Summer_Project/STEREO_Data_Processing/IDL_Utilites/concat_dir.pro'" &&
-echo "ssw_path, '/Users/crura/SSW/gen'" &&
-echo "ssw_path, '/Users/crura/SSW/hinode'" &&
-echo "ssw_path, '/Users/crura/SSW/offline'" &&
-echo "ssw_path, '/Users/crura/SSW/proba2'" &&
-echo "ssw_path, '/Users/crura/SSW/sdo'" &&
-echo "ssw_path, '/Users/crura/SSW/site'" &&
-echo "ssw_path, '/Users/crura/SSW/so'" &&
-echo "ssw_path, '/Users/crura/SSW/soho'" &&
-echo "ssw_path, '/Users/crura/SSW/stereo'" &&
-echo "ssw_path, '/Users/crura/SSW/trace'" &&
-echo "ssw_path, '/Users/crura/SSW/vobs'" &&
-echo "ssw_path, '/Users/crura/SSW/packages'" &&
-echo ".compile -v '/Users/crura/Desktop/Research/idlroutines/download.pro'" &&
-echo ".compile -v '/Users/crura/SSW/packages/forward/idl/DEFAULTS/for_settingdefaults.pro'" &&
-echo ".compile -v '/Users/crura/SSW/gen/idl/util/default.pro'" &&
-echo ".compile -v '/Users/crura/IDLWorkspace/Default/linspace.pro'" &&
+echo ".compile -v '$sswPath/gen/idl/string/strjustify.pro'" &&
+echo ".compile -v '$sswPath/gen/idl/system/strrep_logenv.pro'" &&
+echo ".compile -v '$sswPath/gen/idl/string/prstr.pro'" &&
+echo ".compile -v '$sswPath/gen/idl/genutil/uniqo.pro'" &&
+echo ".compile -v '$git_repo/IDL_Utilites/concat_dir.pro'" &&
+echo "ssw_path, '$sswPath/gen'" &&
+echo "ssw_path, '$sswPath/hinode'" &&
+echo "ssw_path, '$sswPath/offline'" &&
+echo "ssw_path, '$sswPath/proba2'" &&
+echo "ssw_path, '$sswPath/sdo'" &&
+echo "ssw_path, '$sswPath/site'" &&
+echo "ssw_path, '$sswPath/so'" &&
+echo "ssw_path, '$sswPath/soho'" &&
+echo "ssw_path, '$sswPath/stereo'" &&
+echo "ssw_path, '$sswPath/trace'" &&
+echo "ssw_path, '$sswPath/vobs'" &&
+echo "ssw_path, '$sswPath/packages'" &&
+# echo ".compile -v '/Users/crura/Desktop/Research/idlroutines/download.pro'" &&
+echo ".compile -v '$sswPath/packages/forward/idl/DEFAULTS/for_settingdefaults.pro'" &&
+echo ".compile -v '$sswPath/gen/idl/util/default.pro'" &&
+echo ".compile -v '$git_repo/IDL_Utilites/linspace.pro'" &&
 echo ".compile -v '$git_repo/stereo_process.pro'" &&
 
 # from https://gist.github.com/pkuczynski/8665367
