@@ -5,7 +5,7 @@ python3 -m venv env &&
 source env/bin/activate &&
 pip install -r requirements.txt &&
 git_repo=$(git rev-parse --show-toplevel) &&
-sswPath='~/SSW' &&
+sswPath='~/Documents/IDL/ssw' &&
 # export SSW /Users/crura/SSW
 # source $SSW/gen/setup/setup.ssw \loud
 
