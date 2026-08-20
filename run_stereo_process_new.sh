@@ -40,6 +40,7 @@ echo ".compile -v '$sswPath/packages/forward/idl/DEFAULTS/for_settingdefaults.pr
 echo ".compile -v '$sswPath/gen/idl/util/default.pro'" &&
 echo ".compile -v '$git_repo/IDL_Utilites/linspace.pro'" &&
 echo ".compile -v '$git_repo/stereo_process.pro'" &&
+echo "sswdb_upgrade, /spawn, passive_ftp" &&
 
 # from https://gist.github.com/pkuczynski/8665367
 parse_yaml() {
