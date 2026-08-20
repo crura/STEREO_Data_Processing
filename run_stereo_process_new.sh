@@ -1,6 +1,6 @@
 source ~/miniconda3/etc/profile.d/conda.sh &&
 conda init bash &&
-conda activate test_env &&
+conda env update --file environment.yml --prune &&
 python3 -m venv env &&
 source env/bin/activate &&
 pip install -r requirements.txt &&
