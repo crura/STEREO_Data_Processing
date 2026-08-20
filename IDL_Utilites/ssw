@@ -1,0 +1,24 @@
+#!/bin/csh
+setenv IDL_DIR       /Applications/harris/idl89                   # Change this to where you have your IDL
+setenv IDL_TMPDIR    /Users/$user/ssw_tmp/       # Change this to your IDL tempdir
+setenv SSW           ~/Documents/IDL/ssw  # Change to where is your ssw (eg. $HOME/ssw )
+
+# List of instruments to load for your solarsoft
+setenv SSW_INSTR     "gen hinode offline proba2 sdo site so soho stereo trace vobs packages"
+
+source $SSW/gen/setup/setup.ssw /quiet
+
+setenv FORWARD_WORKING_DIR $SSW/packages/forward
+setenv FORWARD $SSW/packages/forward/idl
+setenv FORWARD_DB $SSW/packages/forward/dbase
+setenv FORWARD_DOCS $SSW/packages/forward/docs
+setenv FORWARD_DB $SSW/packages/forward/dbase
+setenv IDL_PATH +${IDL_DIR}/lib:\+$FORWARD/:\+$FORWARD_DOCS/:\+$FORWARD_DB/:\+$FORWARD_WORKING_DIR/
+setenv IDL_DLM_PATH '$SSW/packages/sunspice/icy/lib:<IDL_DEFAULT>'
+
+if (! -d $IDL_TMPDIR ) then
+    mkdir -p $IDL_TMPDIR
+endif
+
+# Run SSWIDL
+sswidl
