@@ -79,5 +79,5 @@ for dir in "$parent_directory"/*/; do
     echo "stereo_process('$dir')"
 done
 cat) |
-/Users/crura/Documents/bin/ssw
+$git_repo/IDL_Utilites/ssw
 deactivate
