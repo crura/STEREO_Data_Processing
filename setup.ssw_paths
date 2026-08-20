@@ -1,0 +1,81 @@
+#!/bin/csh -f
+#
+#####################################################################
+#                                                                   #
+#	$SSW/site/setup/setup.ssw_paths			            #
+#                                                                   #
+# 29-March-2000 S.L.Freeland - Provide TEMPLATE                     #
+#####################################################################
+# Resolve top level mission level SSW environmentals in terms of    #
+# local path/mount point names. Instrument setups such as           #
+# as $SSW/MMM/xxx/setup/setup.xxx_env are defined relative to       # 
+# these 'high level' for easy relocation and backward compatibility #
+#####################################################################
+#
+# See: http://www.lmsal.com/solarsoft/sswdb_description.html
+#
+#####################################################################
+# SSW site manager should change environmental assignments
+# as required for local analysis. 
+#
+# The "Most fundamental" assignment is $SSWDB since many high level
+# data bases default to this parent path.
+#
+# The environmental definitions in this file may include
+# a single entry or a comma delimited search list of one or more
+# entries - a list is generally required if multiple machines share
+# data bases but use different mount point/pathnames. 
+#
+# If a list is present, then the list is scanned from the first
+# element until a matching path exists - the first existing path
+# in the list is then assigned to the corresponding environemental
+# For example:
+#   setenv XXX /one,/two,/three,$HOME
+# will define environmental XXX in terms of the first elemement
+# of {/one , /two , /three} which exists on the local machine
+# If none exists, it will assign the users home directory which
+# should always exist.
+#  
+#########################################################
+# -----------------------------------------------------------------
+setenv SSWDB $HOME/Documents/IDL/sswdb                  # "Fundamental" SSWDB parent path/mount point
+setenv sdb $SSWDB                   # backwardly compatible $SSWDB synonym
+# -----------------------------------------------------------------
+# -----------------------------------------------------------------
+# Define top level SOHO_DATA 
+setenv SOHO_DATA /soho_data,$HOME
+# -----------------------------------------------------------------
+
+# -----------------------------------------------------------------
+# Yohkoh top level envrironmentals 
+setenv ydb  $SSWDB/ydb                   # Yohkoh dbase aka 'ydb' 
+setenv ys   $SSW/yohkoh                  # for Yohkoh->SSW backward compat.
+# -----------------------------------------------------------------
+
+# -----------------------------------------------------------------
+# SDAC (Solar Data Analysis Center data base)
+setenv PERM_DATA    $SSWDB/smm,$HOME			# /sdac-data_base
+setenv BATSE_DATA   $SSWDB/cgro/batse,$HOME
+# -----------------------------------------------------------------
+
+# -----------------------------------------------------------------
+# SPARTAN
+setenv SSW_SPARTAN_DB	$SSWDB/spartan,$HOME
+# -----------------------------------------------------------------
+
+# -----------------------------------------------------------------
+# GOES
+setenv GOES_DATA $SSWDB/goes/fits,$HOME
+setenv GOES_FITS $SSWDB/goes/fits,$HOME
+# -----------------------------------------------------------------
+
+# -----------------------------------------------------------------
+# MDI
+setenv MDI_MAGS $SSWDB/soho/mdi/mags,$HOME
+# -----------------------------------------------------------------
+
+# -----------------------------------------------------------------
+# TRACE
+setenv tdb $SSWDB/tdb,$HOME
+# -----------------------------------------------------------------
+
