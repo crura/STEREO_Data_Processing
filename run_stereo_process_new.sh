@@ -24,15 +24,15 @@ echo ".compile -v '$sswPath/gen/idl/string/prstr.pro'" &&
 echo ".compile -v '$sswPath/gen/idl/genutil/uniqo.pro'" &&
 echo ".compile -v '$git_repo/IDL_Utilites/concat_dir.pro'" &&
 echo "ssw_path, '$sswPath/gen'" &&
-echo "ssw_path, '$sswPath/hinode'" &&
-echo "ssw_path, '$sswPath/offline'" &&
-echo "ssw_path, '$sswPath/proba2'" &&
-echo "ssw_path, '$sswPath/sdo'" &&
-echo "ssw_path, '$sswPath/site'" &&
-echo "ssw_path, '$sswPath/so'" &&
-echo "ssw_path, '$sswPath/soho'" &&
+# echo "ssw_path, '$sswPath/hinode'" &&
+# echo "ssw_path, '$sswPath/offline'" &&
+# echo "ssw_path, '$sswPath/proba2'" &&
+# echo "ssw_path, '$sswPath/sdo'" &&
+# echo "ssw_path, '$sswPath/site'" &&
+# echo "ssw_path, '$sswPath/so'" &&
+# echo "ssw_path, '$sswPath/soho'" &&
 echo "ssw_path, '$sswPath/stereo'" &&
-echo "ssw_path, '$sswPath/trace'" &&
+# echo "ssw_path, '$sswPath/trace'" &&
 echo "ssw_path, '$sswPath/vobs'" &&
 echo "ssw_path, '$sswPath/packages'" &&
 # echo ".compile -v '/Users/crura/Desktop/Research/idlroutines/download.pro'" &&
